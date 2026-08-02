@@ -5,38 +5,65 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# إعدادات الصفحة وتصميم المظهر العام Modern CSS
-st.set_page_config(page_title="SmartStock ERP Pro", page_icon="🛍️", layout="wide")
+# إعدادات الصفحة
+st.set_page_config(page_title="SmartStock", page_icon="🛍️", layout="wide")
 
+# تصميم الديزاين المودرن الفخم (Modern UI & Animations)
 st.markdown("""
     <style>
+    /* خلفية عامة مريحة للعين وبسيطة */
     .main {
-        background-color: #f8f9fa;
-    }
-    h1, h2, h3 {
-        color: #1e293b;
+        background-color: #f1f5f9;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+    
+    /* العناوين بستايل راقي وجذاب */
+    h1, h2, h3 {
+        color: #0f172a;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+    
+    /* كروت النماذج بشكل عصري مع تأثير Hover ناعم */
     div.stForm {
-        background-color: #ffffff;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
         border: 1px solid #e2e8f0;
+        transition: transform 0.3s ease;
     }
+    
+    div.stForm:hover {
+        transform: translateY(-2px);
+    }
+    
+    /* أزرار عصرية بتدرجات ألوان فخمة */
     .stButton>button {
-        background-color: #2563eb;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
         color: white;
-        border-radius: 8px;
-        font-weight: bold;
-        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.6rem 1.2rem;
         border: none;
-        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         transition: all 0.3s ease;
+        width: 100%;
     }
+    
     .stButton>button:hover {
-        background-color: #1d4ed8;
-        box-shadow: 0 4px 8px rgba(37, 99, 235, 0.4);
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        transform: scale(1.01);
+    }
+    
+    /* تنسيق الكروت الإحصائية (Metrics) */
+    div[data-testid="stMetric"] {
+        background: #ffffff;
+        padding: 15px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -74,12 +101,13 @@ def load_data():
 
 df_products, df_trans, df_inventory = load_data()
 
-st.sidebar.title("🔐 لوحة التحكم وصلاحيات النظام")
-app_mode = st.sidebar.selectbox("اختر الشاشة", ["🛒 متجر SmartStock للمنتجات", "⚙️ لوحة تحكم المالك (Admin)"])
+# القائمة الجانبية بالاسم المطلوب
+st.sidebar.title("🔐 لوحة التحكم")
+app_mode = st.sidebar.selectbox("اختر الشاشة", ["SmartStock", "⚙️ لوحة التحكم"])
 
-if app_mode == "🛒 متجر SmartStock للمنتجات":
-    st.title("🛍️ متجر SmartStock العصري للمنتجات")
-    st.markdown("أهلاً بك! تصفح منتجاتنا واطلب بكل سهولة ويسر.")
+if app_mode == "SmartStock":
+    st.title("🛍️ SmartStock")
+    st.markdown("مرحباً بك! تصفح المنتجات وأتمم طلبك بكل راحة واحترافية.")
     st.markdown("---")
     
     st.subheader("📋 قائمة المنتجات المتاحة للطلب")
@@ -87,7 +115,7 @@ if app_mode == "🛒 متجر SmartStock للمنتجات":
         st.dataframe(df_inventory[["Item Name", "Current Balance"]], use_container_width=True)
     
     st.markdown("---")
-    st.subheader("📝 نموذج طلب شراء بيانات العميل الكاملة")
+    st.subheader("📝 املأ بياناتك")
     
     with st.form("customer_order_full"):
         c_name = st.selectbox("اختر المنتج المطلوب", df_inventory["Item Name"].tolist() if "Item Name" in df_inventory.columns else [])
@@ -144,7 +172,6 @@ if app_mode == "🛒 متجر SmartStock للمنتجات":
 
 else:
     st.sidebar.markdown("---")
-    # 🔑 كلمة مرور لوحة التحكم الجديدة
     admin_pass = st.sidebar.text_input("كلمة مرور الأدمن", type="password")
     
     if admin_pass == "lklklk900AR4":
