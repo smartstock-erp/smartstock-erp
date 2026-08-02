@@ -8,7 +8,7 @@ from email.mime.multipart import MIMEMultipart
 # إعدادات الصفحة
 st.set_page_config(page_title="SmartStock", page_icon="🛍️", layout="wide")
 
-# تصميم UI حديث مع تكبير خط عناوين الكروت (Metrics Labels) بشكل واضح جداً
+# تصميم UI حديث مع تكبير الأرقام بوضوح تام وإرجاع توازن الخطوط
 st.markdown("""
     <style>
     .stApp {
@@ -48,7 +48,7 @@ st.markdown("""
         transform: translateY(-2px);
     }
     
-    /* تنسيق وتكبير كروت الإحصائيات (Metrics) مع تكبير حجم الخط للكلام نفسه */
+    /* تنسيق كروت الإحصائيات مع تكبير الأرقام بشكل بارز وواضح جداً */
     div[data-testid="stMetric"] {
         background: #ffffff !important;
         padding: 25px !important;
@@ -58,14 +58,14 @@ st.markdown("""
         text-align: center !important;
     }
     div[data-testid="stMetricValue"] {
-        font-size: 34px !important;
-        font-weight: 800 !important;
-        color: #0f172a !important;
+        font-size: 42px !important;
+        font-weight: 900 !important;
+        color: #0284c7 !important;
     }
     div[data-testid="stMetricLabel"] {
-        font-size: 19px !important;
-        font-weight: 800 !important;
-        color: #1e293b !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        color: #475569 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -103,7 +103,6 @@ def load_data():
 
 df_products, df_trans, df_inventory = load_data()
 
-# القائمة الجانبية
 st.sidebar.title("🔐 لوحة التحكم")
 app_mode = st.sidebar.selectbox("اختر الشاشة", ["SmartStock", "⚙️ لوحة التحكم"])
 
