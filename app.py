@@ -288,7 +288,7 @@ def draw_charts(df_inventory, df_trans):
 
     with col2:
         if not df_inventory.empty:
-            fig_bar = px.bar(df_inventory, x="Item Name", y="Current Balance", template="plotly_white", color="Current Balance", color_continuous_scale="Sky")
+            fig_bar = px.bar(df_inventory, x="Item Name", y="Current Balance", template="plotly_white", color="Current Balance", color_continuous_scale="Blues")
             st.plotly_chart(style_plot(fig_bar, "مستوى المخزون الحالي (Bar Chart)"), use_container_width=True)
 
     col3, col4 = st.columns(2)
