@@ -310,6 +310,8 @@ if app_mode == "متجر Curex الطبي":
                             df_inventory.loc[idx[0], "Current Balance"] = new_bal
                             if "Total Sold" in df_inventory.columns:
                                 df_inventory.loc[idx[0], "Total Sold"] += c_qty
+                            else:
+                                df_inventory.loc[idx[0], "Total Sold"] = c_qty
 
                         df_inventory.to_excel(writer, sheet_name="Inventory Balance", index=False)
                         
@@ -371,33 +373,35 @@ else:
                 </div>
             """, unsafe_allow_html=True)
 
-        st.markdown("<br><h3 style='margin-bottom: 20px; color: #34d399; text-align: right;'>التحليلات والرسوم البيانية لمخزون Curex</h3>", unsafe_allow_html=True)
+        st.markdown("<br><h3 style='margin-bottom: 20px; color: #34d399; text-align: right;'>التحليلات والرسوم البيانية لمخزون ومبيعات Curex</h3>", unsafe_allow_html=True)
         
         chart_col1, chart_col2 = st.columns(2)
         with chart_col1:
             if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
-                fig_bar = px.bar(df_inventory, x="Item Name", y="Current Balance", title="توزيع رصيد المنتجات الطبية", template="plotly_dark")
+                fig_bar = px.bar(df_inventory, x="Item Name", y="Current Balance", template="plotly_dark")
                 fig_bar.update_layout(
                     paper_bgcolor="rgba(0,0,0,0)",
                     plot_bgcolor="rgba(0,0,0,0)",
                     font=dict(color="white", size=12, family="Cairo"),
-                    title=dict(text="توزيع رصيد المنتجات الطبية", x=0.5, xanchor='center', font=dict(color="#34d399", size=18, family="Cairo")),
+                    title=dict(text="توزيع رصيد المنتجات الطبية بالمخزن", x=0.5, xanchor='center', font=dict(color="#34d399", size=18, family="Cairo")),
                     xaxis=dict(tickfont=dict(color="white", size=11), tickangle=-45),
                     yaxis=dict(tickfont=dict(color="white"))
                 )
                 st.plotly_chart(fig_bar, use_container_width=True)
                 
         with chart_col2:
-            if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
-                fig_pie = px.pie(df_inventory, names="Item Name", values="Current Balance", title="نسب توزيع المخزون الطبي", template="plotly_dark")
-                fig_pie.update_layout(
+            if not df_inventory.empty and "Item Name" in df_inventory.columns:
+                # التحقق من وجود عمود المبيعات Total Sold أو إنشاء عمود افتراضي للتمثيل
+                sold_col = "Total Sold" if "Total Sold" in df_inventory.columns else "Current Balance"
+                fig_sales_pie = px.pie(df_inventory, names="Item Name", values=sold_col, template="plotly_dark")
+                fig_sales_pie.update_layout(
                     paper_bgcolor="rgba(0,0,0,0)",
                     plot_bgcolor="rgba(0,0,0,0)",
                     font=dict(color="white", size=13, family="Cairo"),
-                    title=dict(text="نسب توزيع المخزون الطبي", x=0.5, xanchor='center', font=dict(color="#34d399", size=18, family="Cairo")),
+                    title=dict(text="نسب بيع وتوزيع المنتجات (Sales Share)", x=0.5, xanchor='center', font=dict(color="#34d399", size=18, family="Cairo")),
                     legend=dict(font=dict(color="white", size=12))
                 )
-                st.plotly_chart(fig_pie, use_container_width=True)
+                st.plotly_chart(fig_sales_pie, use_container_width=True)
 
         st.markdown("<hr style='border-color: rgba(52,211,153,0.2); margin: 35px 0;'>", unsafe_allow_html=True)
         st.subheader("تفاصيل المخزون الطبي الحالي")
@@ -416,7 +420,7 @@ else:
             p_submit = st.form_submit_button("إضافة الصنف للمخزن")
             
             if p_submit and p_name:
-                new_row = pd.DataFrame([{"Item Name": p_name, "Current Balance": p_bal, "Reorder Point": p_reorder}])
+                new_row = pd.DataFrame([{"Item Name": p_name, "Current Balance": p_bal, "Reorder Point": p_reorder, "Total Sold": 0}])
                 df_inventory_updated = pd.concat([df_inventory, new_row], ignore_index=True)
                 with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
                     df_inventory_updated.to_excel(writer, sheet_name="Inventory Balance", index=False)
