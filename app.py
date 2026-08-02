@@ -308,6 +308,7 @@ if app_mode == "متجر Curex الطبي":
                             current_bal = df_inventory.loc[idx[0], "Current Balance"]
                             new_bal = max(0, current_bal - c_qty)
                             df_inventory.loc[idx[0], "Current Balance"] = new_bal
+                            
                             if "Total Sold" in df_inventory.columns:
                                 df_inventory.loc[idx[0], "Total Sold"] += c_qty
                             else:
@@ -375,6 +376,7 @@ else:
 
         st.markdown("<br><h3 style='margin-bottom: 20px; color: #34d399; text-align: right;'>التحليلات والرسوم البيانية لمخزون ومبيعات Curex</h3>", unsafe_allow_html=True)
         
+        # الصف الأول من الرسوم البيانية (الرسم الشريطي والرسم الدائري لتوزيع المخزون)
         chart_col1, chart_col2 = st.columns(2)
         with chart_col1:
             if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
@@ -390,18 +392,32 @@ else:
                 st.plotly_chart(fig_bar, use_container_width=True)
                 
         with chart_col2:
+            if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
+                fig_pie = px.pie(df_inventory, names="Item Name", values="Current Balance", template="plotly_dark")
+                fig_pie.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    font=dict(color="white", size=13, family="Cairo"),
+                    title=dict(text="نسب توزيع المخزون الطبي الحالي", x=0.5, xanchor='center', font=dict(color="#34d399", size=18, family="Cairo")),
+                    legend=dict(font=dict(color="white", size=12))
+                )
+                st.plotly_chart(fig_pie, use_container_width=True)
+
+        # الصف الثاني للرسوم البيانية (رسم بياني إضافي خاص بنسب بيع المنتجات Sales Share)
+        st.markdown("<br>", unsafe_allow_html=True)
+        sales_col1, sales_col2 = st.columns([1, 1])
+        with sales_col1:
             if not df_inventory.empty and "Item Name" in df_inventory.columns:
-                # التحقق من وجود عمود المبيعات Total Sold أو إنشاء عمود افتراضي للتمثيل
-                sold_col = "Total Sold" if "Total Sold" in df_inventory.columns else "Current Balance"
-                fig_sales_pie = px.pie(df_inventory, names="Item Name", values=sold_col, template="plotly_dark")
-                fig_sales_pie.update_layout(
+                sold_column = "Total Sold" if "Total Sold" in df_inventory.columns else "Current Balance"
+                fig_sales = px.pie(df_inventory, names="Item Name", values=sold_column, hole=0.4, template="plotly_dark")
+                fig_sales.update_layout(
                     paper_bgcolor="rgba(0,0,0,0)",
                     plot_bgcolor="rgba(0,0,0,0)",
                     font=dict(color="white", size=13, family="Cairo"),
                     title=dict(text="نسب بيع وتوزيع المنتجات (Sales Share)", x=0.5, xanchor='center', font=dict(color="#34d399", size=18, family="Cairo")),
                     legend=dict(font=dict(color="white", size=12))
                 )
-                st.plotly_chart(fig_sales_pie, use_container_width=True)
+                st.plotly_chart(fig_sales, use_container_width=True)
 
         st.markdown("<hr style='border-color: rgba(52,211,153,0.2); margin: 35px 0;'>", unsafe_allow_html=True)
         st.subheader("تفاصيل المخزون الطبي الحالي")
