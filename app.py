@@ -8,22 +8,19 @@ from email.mime.multipart import MIMEMultipart
 # إعدادات الصفحة
 st.set_page_config(page_title="SmartStock", page_icon="🛍️", layout="wide")
 
-# تصميم UI حديث وفاخر جداً (Ultra-Modern CSS Design)
+# تصميم UI حديث وفاخر جداً (مع تكبير كروت الـ Metrics بشكل واضح)
 st.markdown("""
     <style>
-    /* خلفية متدرجة فخمة وخطوط عصرية */
     .stApp {
         background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
     }
     
-    /* العناوين بلون جذاب وأناقة عالية */
     h1, h2, h3 {
         color: #0f172a !important;
         font-weight: 800 !important;
     }
     
-    /* كروت النماذج بتصميم زجاجي وظل ناعم */
     div.stForm {
         background: #ffffff !important;
         padding: 35px !important;
@@ -32,7 +29,6 @@ st.markdown("""
         border: 2px solid #cbd5e1 !important;
     }
     
-    /* الأزرار بتدرجات لونية ممتازة وحجم بارز */
     .stButton>button {
         background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
         color: white !important;
@@ -47,18 +43,29 @@ st.markdown("""
     }
     
     .stButton>button:hover {
-        background: linear-gradient(135deg, #0369a1 0%, #075985 100%) !important;
+        background: linear-gradient(135deg, #0369a1 100%, #075985 0%) !important;
         box-shadow: 0 6px 20px rgba(2, 132, 199, 0.6) !important;
         transform: translateY(-2px);
     }
     
-    /* مربعات الإحصائيات في الداشبورد */
+    /* تكبير وتوسيع كروت الإحصائيات (Metrics) لتكون ضخمة وبارزة */
     div[data-testid="stMetric"] {
         background: #ffffff !important;
-        padding: 20px !important;
-        border-radius: 16px !important;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
-        border-left: 6px solid #0284c7 !important;
+        padding: 25px !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.08) !important;
+        border-left: 8px solid #0284c7 !important;
+        text-align: center !important;
+    }
+    div[data-testid="stMetricValue"] {
+        font-size: 32px !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+    }
+    div[data-testid="stMetricLabel"] {
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        color: #475569 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -170,7 +177,7 @@ else:
     admin_pass = st.sidebar.text_input("كلمة مرور الأدمن", type="password")
     
     if admin_pass == "lklklk900AR4":
-        st.title("📊 لوحة تحكم التخطيط والتنبؤ الذكي (Admin Dashboard)")
+        st.title("📊 Dashboard")
         st.markdown("---")
 
         col1, col2, col3 = st.columns(3)
@@ -182,7 +189,7 @@ else:
             reorder_count = len(df_inventory[df_inventory["Reorder Point"].astype(str).str.contains("Reorder|🚨", na=False)])
             st.metric(label="🚨 منتجات تحتاج للطلب", value=reorder_count)
 
-        st.subheader("🔔 لوحة متابعة طلبات العملاء والعمليات (Live Orders)")
+        st.subheader("لوحة متابعة طلبات العملاء والعمليات (Live Orders)")
         st.dataframe(df_trans, use_container_width=True)
 
         st.markdown("---")
