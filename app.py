@@ -15,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تصميم واجهة Curex الطبية المتطورة مع خلفية طبية وأنيميشن تفاعلي
+# تصميم واجهة Curex الطبية المتطورة مع خلفية طبية وأنيميشن تفاعلي وضبط الألوان الثابتة للأزرار
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
@@ -170,10 +170,10 @@ st.markdown("""
         text-align: right !important;
     }
 
-    /* الأزرار الطبية التفاعلية */
+    /* الأزرار الطبية التفاعلية مع تثبيت ظهور الخط الأبيض بوضوح تام */
     .stButton>button {
         background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
-        color: white !important;
+        color: #ffffff !important;
         border-radius: 16px !important;
         font-weight: 800 !important;
         font-size: 16px !important;
@@ -184,8 +184,14 @@ st.markdown("""
         transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    .stButton>button p, .stButton>button span {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+    }
+
     .stButton>button:hover {
         background: linear-gradient(135deg, #047857 0%, #065f46 100%) !important;
+        color: #ffffff !important;
         box-shadow: 0 15px 35px rgba(52, 211, 153, 0.5) !important;
         transform: translateY(-2px);
     }
