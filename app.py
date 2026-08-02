@@ -15,109 +15,69 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تصميم UI حديث مع Glassmorphism وألوان متدرجة تفاعلية
+# تصميم UI حديث مع تباين عالي ووضوح تام للنصوص
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
 
-    :root {
-        --primary: #2563eb;
-        --secondary: #38bdf8;
-        --success: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --bg-dark: #0f172a;
-        --glass-bg: rgba(255, 255, 255, 0.08);
-        --glass-border: rgba(255, 255, 255, 0.15);
-        --glass-card: rgba(15, 23, 42, 0.65);
-    }
-
     .stApp {
-        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
+        background: linear-gradient(135deg, #090d16 0%, #111e38 50%, #1e3a8a 100%);
         background-attachment: fixed;
         font-family: 'Cairo', sans-serif;
-        color: #f8fafc;
+        color: #ffffff;
     }
 
-    /* تحسين النصوص العامة */
-    h1, h2, h3, h4, h5, h6 {
+    /* تحسين النصوص العامة والعناوين لتكون واضحة تماماً */
+    h1, h2, h3, h4, h5, h6, label, .stMarkdown p {
         color: #ffffff !important;
-        font-weight: 800 !important;
+        font-weight: 700 !important;
     }
 
     /* ستايل الـ Sidebar */
     [data-testid="stSidebar"] {
-        background: rgba(15, 23, 42, 0.85) !important;
+        background: rgba(11, 17, 32, 0.95) !important;
         backdrop-filter: blur(16px);
-        border-left: 1px solid var(--glass-border);
+        border-left: 1px solid rgba(255, 255, 255, 0.15);
     }
 
-    /* كروت الـ Glassmorphism الكبرى */
+    /* كروت الـ Glassmorphism */
     .glass-card {
-        background: rgba(30, 41, 59, 0.7);
+        background: rgba(15, 23, 42, 0.85);
         backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 24px;
         padding: 30px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         margin-bottom: 20px;
     }
 
-    .glass-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 30px 60px rgba(37, 99, 235, 0.25);
-        border-color: rgba(56, 189, 248, 0.4);
-    }
-
-    /* بطاقات الإحصائيات الضخمة Dashboard Metrics */
+    /* بطاقات الإحصائيات */
     .metric-big-card {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+        border: 1px solid rgba(56, 189, 248, 0.3);
         border-radius: 24px;
         padding: 30px;
         text-align: center;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .metric-big-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(37, 99, 235, 0.3);
-        border-color: #38bdf8;
-    }
-
-    .metric-icon {
-        font-size: 45px;
-        margin-bottom: 15px;
-        display: inline-block;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
     }
 
     .metric-title {
-        font-size: 22px !important;
-        font-weight: 800 !important;
-        color: #94a3b8 !important;
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        color: #38bdf8 !important;
         margin-bottom: 10px;
     }
 
     .metric-value {
-        font-size: 54px !important;
+        font-size: 50px !important;
         font-weight: 900 !important;
         color: #ffffff !important;
-        background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
     }
 
-    /* متجر المنتجات (Client Store Cards) */
+    /* متجر المنتجات */
     .product-store-card {
-        background: rgba(30, 41, 59, 0.6);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(30, 41, 59, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 20px;
         padding: 24px;
         text-align: center;
@@ -126,9 +86,8 @@ st.markdown("""
     }
 
     .product-store-card:hover {
-        transform: scale(1.03);
-        border-color: #2563eb;
-        box-shadow: 0 15px 30px rgba(37, 99, 235, 0.2);
+        border-color: #38bdf8;
+        box-shadow: 0 10px 25px rgba(56, 189, 248, 0.25);
     }
 
     .badge-stock {
@@ -139,8 +98,24 @@ st.markdown("""
         font-weight: 700;
         margin-top: 12px;
     }
-    .badge-good { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
-    .badge-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+    .badge-good { background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid #10b981; }
+    .badge-danger { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid #ef4444; }
+
+    /* حقول الإدخال بوضوح تام وتصحيح اللون الرمادي الباهت */
+    .stTextInput input, .stNumberInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
+        background-color: rgba(11, 17, 32, 0.9) !important;
+        color: #ffffff !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(56, 189, 248, 0.4) !important;
+        font-weight: 600 !important;
+    }
+
+    /* إصلاح تباين النصوص التوضيحية فوق الحقول لتعود واضحة تماماً */
+    [data-testid="stForm"] label, .stTextInput label, .stNumberInput label, .stSelectbox label, .stTextArea label {
+        color: #38bdf8 !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+    }
 
     /* تخصيص الأزرار */
     .stButton>button {
@@ -150,46 +125,14 @@ st.markdown("""
         font-weight: 800 !important;
         font-size: 16px !important;
         padding: 0.8rem 1.8rem !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
         box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4) !important;
         width: 100% !important;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .stButton>button:hover {
         background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
-        box-shadow: 0 12px 25px rgba(37, 99, 235, 0.6) !important;
-        transform: translateY(-2px);
-    }
-
-    /* تخصيص حقول الإدخال النماذج */
-    div.stForm {
-        background: rgba(30, 41, 59, 0.75) !important;
-        backdrop-filter: blur(20px) !important;
-        padding: 40px !important;
-        border-radius: 24px !important;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    }
-
-    .stTextInput input, .stNumberInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
-        background-color: rgba(15, 23, 42, 0.6) !important;
-        color: #ffffff !important;
-        border-radius: 12px !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    }
-
-    .stTextInput input:focus, .stNumberInput input:focus, .stTextArea textarea:focus {
-        border-color: #38bdf8 !important;
-        box-shadow: 0 0 15px rgba(56, 189, 248, 0.3) !important;
-    }
-
-    /* تحسين الجداول */
-    [data-testid="stDataFrame"] {
-        background: rgba(30, 41, 59, 0.5);
-        border-radius: 16px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 12px 25px rgba(56, 189, 248, 0.5) !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -227,14 +170,14 @@ def load_data():
 
 df_products, df_trans, df_inventory = load_data()
 
-# شريط وقت وتاريخ أعلى الشريط الجانبي
+# شريط جانبى
 with st.sidebar:
     st.markdown("""
         <div style="text-align: center; padding: 10px 0;">
             <h1 style="font-size: 26px; color: #38bdf8; margin-bottom: 0;">🛍️ SmartStock</h1>
-            <p style="font-size: 12px; color: #94a3b8;">إدارة المخزون ونقاط البيع الذكية</p>
+            <p style="font-size: 13px; color: #cbd5e1;">إدارة المخزون ونقاط البيع الذكية</p>
         </div>
-        <hr style="border-color: rgba(255,255,255,0.1);">
+        <hr style="border-color: rgba(255,255,255,0.15);">
     """, unsafe_allow_html=True)
     
     current_time_str = datetime.now().strftime("%Y-%m-%d | %H:%M")
@@ -245,29 +188,25 @@ with st.sidebar:
 if app_mode == "SmartStock":
     st.markdown("""
         <div class="glass-card" style="text-align: center; padding: 40px; margin-bottom: 30px;">
-            <h1 style="font-size: 40px; color: #38bdf8; margin-bottom: 10px;">🛍️ متجر SmartStock الرقمي</h1>
-            <p style="font-size: 18px; color: #94a3b8;">تُشرّفنا زيارتُك، تصفّح المنتجات المتاحة وأتمم طلبك بكل سهولة ويسر.</p>
+            <h1 style="font-size: 36px; color: #38bdf8; margin-bottom: 10px;">🛍️ متجر SmartStock الرقمي</h1>
+            <p style="font-size: 17px; color: #e2e8f0;">تُشرّفنا زيارتُك، تصفّح المنتجات المتاحة وأتمم طلبك بكل سهولة ويسر.</p>
         </div>
     """, unsafe_allow_html=True)
     
-    # شريط بحث عن المنتجات
     search_query = st.text_input("🔍 ابحث عن منتج بالمخزون...", "")
     
-    st.markdown("<h3 style='margin-top: 30px; margin-bottom: 20px;'>📋 المنتجات المتاحة للطلب الفوري</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin-top: 30px; margin-bottom: 20px; color: #38bdf8;'>📋 المنتجات المتاحة للطلب الفوري</h3>", unsafe_allow_html=True)
     
     if not df_inventory.empty:
-        # فلترة المنتجات حسب البحث
         filtered_inv = df_inventory.copy()
         if search_query:
             filtered_inv = filtered_inv[filtered_inv["Item Name"].astype(str).str.contains(search_query, case=False, na=False)]
         
-        # عرض المنتجات بنظام الكروت (Grid) كمتجر إلكتروني احترافي
         cols = st.columns(3)
         for idx, row in filtered_inv.iterrows():
             item_name = row.get("Item Name", "منتج بدون اسم")
             current_bal = row.get("Current Balance", 0)
             
-            # تحديد حالة التوفر بالألوان
             if current_bal > 5:
                 stock_badge = f'<span class="badge-stock badge-good">متوفر: {current_bal}</span>'
             else:
@@ -276,15 +215,15 @@ if app_mode == "SmartStock":
             with cols[idx % 3]:
                 st.markdown(f"""
                     <div class="product-store-card">
-                        <div style="font-size: 45px; margin-bottom: 10px;">📦</div>
-                        <h4 style="color: #ffffff; font-size: 20px; margin-bottom: 10px;">{item_name}</h4>
+                        <div style="font-size: 40px; margin-bottom: 10px;">📦</div>
+                        <h4 style="color: #ffffff; font-size: 18px; margin-bottom: 10px;">{item_name}</h4>
                         {stock_badge}
                     </div>
                 """, unsafe_allow_html=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
 
-    st.markdown("<h3 style='margin-top: 20px; margin-bottom: 20px;'>📝 نموذج تقديم الطلب</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin-top: 20px; margin-bottom: 20px; color: #38bdf8;'>📝 نموذج تقديم الطلب</h3>", unsafe_allow_html=True)
     
     with st.form("customer_order_full"):
         c_name = st.selectbox("اختر المنتج المطلوب", df_inventory["Item Name"].tolist() if "Item Name" in df_inventory.columns else [])
@@ -344,16 +283,15 @@ else:
     admin_pass = st.sidebar.text_input("كلمة مرور الأدمن", type="password")
     
     if admin_pass == "lklklk900AR4":
-        st.markdown("<h1 style='font-size: 38px; margin-bottom: 25px;'>📊 لوحة التحكم الرئيسية (Admin Dashboard)</h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='font-size: 38px; margin-bottom: 25px; color: #38bdf8;'>📊 لوحة التحكم الرئيسية (Admin Dashboard)</h1>", unsafe_allow_html=True)
         st.markdown("---")
 
-        # البطاقات الثلاث الضخمة حسب الطلب (حجم خط كبير جداً وأيقونات مميزة)
         col1, col2, col3 = st.columns(3)
         with col1:
             prod_len = len(df_products)
             st.markdown(f"""
                 <div class="metric-big-card">
-                    <div class="metric-icon">📦</div>
+                    <div style="font-size: 35px; margin-bottom: 10px;">📦</div>
                     <div class="metric-title">إجمالي المنتجات</div>
                     <div class="metric-value">{prod_len}</div>
                 </div>
@@ -362,7 +300,7 @@ else:
             trans_len = len(df_trans)
             st.markdown(f"""
                 <div class="metric-big-card">
-                    <div class="metric-icon">🔄</div>
+                    <div style="font-size: 35px; margin-bottom: 10px;">🔄</div>
                     <div class="metric-title">إجمالي العمليات والطلبات</div>
                     <div class="metric-value">{trans_len}</div>
                 </div>
@@ -371,36 +309,35 @@ else:
             reorder_count = len(df_inventory[df_inventory["Reorder Point"].astype(str).str.contains("Reorder|🚨", na=False)])
             st.markdown(f"""
                 <div class="metric-big-card">
-                    <div class="metric-icon">🚨</div>
+                    <div style="font-size: 35px; margin-bottom: 10px;">🚨</div>
                     <div class="metric-title">منتجات تحتاج للطلب</div>
                     <div class="metric-value">{reorder_count}</div>
                 </div>
             """, unsafe_allow_html=True)
 
-        st.markdown("<br><h3 style='margin-bottom: 15px;'>📈 الرسوم البيانية والتحليلات المتقدمة</h3>", unsafe_allow_html=True)
+        st.markdown("<br><h3 style='margin-bottom: 15px; color: #38bdf8;'>📈 الرسوم البيانية والتحليلات المتقدمة</h3>", unsafe_allow_html=True)
         
-        # رسوم بيانية تفاعلية باستخدام Plotly داخل كروت زجاجية
         chart_col1, chart_col2 = st.columns(2)
         with chart_col1:
             if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
                 fig_bar = px.bar(df_inventory, x="Item Name", y="Current Balance", title="توزيع الرصيد الحالي للمنتجات", template="plotly_dark")
-                fig_bar.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+                fig_bar.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="white"))
                 st.plotly_chart(fig_bar, use_container_width=True)
         with chart_col2:
             if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
                 fig_pie = px.pie(df_inventory, names="Item Name", values="Current Balance", title="حصة المخزون من الأصناف", template="plotly_dark")
-                fig_pie.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+                fig_pie.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="white"))
                 st.plotly_chart(fig_pie, use_container_width=True)
 
-        st.markdown("<hr style='border-color: rgba(255,255,255,0.1); margin: 30px 0;'>", unsafe_allow_html=True)
+        st.markdown("<hr style='border-color: rgba(255,255,255,0.15); margin: 30px 0;'>", unsafe_allow_html=True)
         st.subheader("📦 تفاصيل المخزون الحالي")
         st.dataframe(df_inventory, use_container_width=True)
 
-        st.markdown("<hr style='border-color: rgba(255,255,255,0.1); margin: 30px 0;'>", unsafe_allow_html=True)
+        st.markdown("<hr style='border-color: rgba(255,255,255,0.15); margin: 30px 0;'>", unsafe_allow_html=True)
         st.subheader("لوحة متابعة طلبات العملاء والعمليات (Live Orders)")
         st.dataframe(df_trans, use_container_width=True)
 
-        st.markdown("<hr style='border-color: rgba(255,255,255,0.1); margin: 30px 0;'>", unsafe_allow_html=True)
+        st.markdown("<hr style='border-color: rgba(255,255,255,0.15); margin: 30px 0;'>", unsafe_allow_html=True)
         st.subheader("➕ إضافة صنف جديد للمخزن")
         with st.form("add_product"):
             p_name = st.text_input("اسم المنتج الجديد")
@@ -420,9 +357,8 @@ else:
     else:
         st.warning("🔒 من فضلك ادخل كلمة مرور الأدمن الصحيحة في القائمة الجانبية لعرض لوحة التحكم.")
 
-# Footer احترافي
 st.markdown("""
-    <hr style='border-color: rgba(255,255,255,0.1); margin-top: 50px;'>
+    <hr style='border-color: rgba(255,255,255,0.15); margin-top: 50px;'>
     <div style='text-align: center; color: #94a3b8; font-size: 14px; padding-bottom: 20px;'>
         SmartStock ERP Pro &copy; 2026 | جميع الحقوق محفوظة | تصميم UI/UX فائق الاحترافية
     </div>
