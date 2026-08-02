@@ -27,20 +27,17 @@ st.markdown("""
         color: #ffffff;
     }
 
-    /* تحسين النصوص العامة والعناوين لتكون واضحة تماماً */
     h1, h2, h3, h4, h5, h6, label, .stMarkdown p {
         color: #ffffff !important;
         font-weight: 700 !important;
     }
 
-    /* ستايل الـ Sidebar */
     [data-testid="stSidebar"] {
         background: rgba(11, 17, 32, 0.95) !important;
         backdrop-filter: blur(16px);
         border-left: 1px solid rgba(255, 255, 255, 0.15);
     }
 
-    /* كروت الـ Glassmorphism */
     .glass-card {
         background: rgba(15, 23, 42, 0.85);
         backdrop-filter: blur(20px);
@@ -51,7 +48,6 @@ st.markdown("""
         margin-bottom: 20px;
     }
 
-    /* بطاقات الإحصائيات */
     .metric-big-card {
         background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
         border: 1px solid rgba(56, 189, 248, 0.3);
@@ -74,7 +70,6 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* متجر المنتجات */
     .product-store-card {
         background: rgba(30, 41, 59, 0.75);
         border: 1px solid rgba(255, 255, 255, 0.15);
@@ -101,7 +96,6 @@ st.markdown("""
     .badge-good { background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid #10b981; }
     .badge-danger { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid #ef4444; }
 
-    /* حقول الإدخال بوضوح تام وتصحيح اللون الرمادي الباهت */
     .stTextInput input, .stNumberInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
         background-color: rgba(11, 17, 32, 0.9) !important;
         color: #ffffff !important;
@@ -110,14 +104,12 @@ st.markdown("""
         font-weight: 600 !important;
     }
 
-    /* إصلاح تباين النصوص التوضيحية فوق الحقول لتعود واضحة تماماً */
     [data-testid="stForm"] label, .stTextInput label, .stNumberInput label, .stSelectbox label, .stTextArea label {
         color: #38bdf8 !important;
         font-size: 16px !important;
         font-weight: 700 !important;
     }
 
-    /* تخصيص الأزرار */
     .stButton>button {
         background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
         color: white !important;
@@ -170,7 +162,6 @@ def load_data():
 
 df_products, df_trans, df_inventory = load_data()
 
-# شريط جانبى
 with st.sidebar:
     st.markdown("""
         <div style="text-align: center; padding: 10px 0;">
@@ -321,13 +312,18 @@ else:
         with chart_col1:
             if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
                 fig_bar = px.bar(df_inventory, x="Item Name", y="Current Balance", title="توزيع الرصيد الحالي للمنتجات", template="plotly_dark")
-                # تم ضبط لون العناوين والمحاور لتكون بيضاء وواضحة جداً
+                
+                # تعديل زاوية ونبدة كتابة أسماء المنتجات تحت الأعمدة لتصبح مقلوبة بالاتجاه الصحيح ومقروءة تماماً
                 fig_bar.update_layout(
                     paper_bgcolor="rgba(0,0,0,0)",
                     plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="white", size=14, family="Cairo"),
+                    font=dict(color="white", size=12, family="Cairo"),
                     title_font=dict(color="#38bdf8", size=18, family="Cairo"),
-                    xaxis=dict(title_font=dict(color="white"), tickfont=dict(color="white")),
+                    xaxis=dict(
+                        title_font=dict(color="white"),
+                        tickfont=dict(color="white", size=11),
+                        tickangle=-45  # تعديل زاوية الميل لتبدو مريحة ومنسقة تماماً
+                    ),
                     yaxis=dict(title_font=dict(color="white"), tickfont=dict(color="white"))
                 )
                 st.plotly_chart(fig_bar, use_container_width=True)
@@ -335,7 +331,6 @@ else:
         with chart_col2:
             if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
                 fig_pie = px.pie(df_inventory, names="Item Name", values="Current Balance", title="حصة المخزون من الأصناف", template="plotly_dark")
-                # تم ضبط لون العناوين والليجند لتكون واضحة
                 fig_pie.update_layout(
                     paper_bgcolor="rgba(0,0,0,0)",
                     plot_bgcolor="rgba(0,0,0,0)",
