@@ -8,62 +8,57 @@ from email.mime.multipart import MIMEMultipart
 # إعدادات الصفحة
 st.set_page_config(page_title="SmartStock", page_icon="🛍️", layout="wide")
 
-# تصميم الديزاين المودرن الفخم (Modern UI & Animations)
+# تصميم UI حديث وفاخر جداً (Ultra-Modern CSS Design)
 st.markdown("""
     <style>
-    /* خلفية عامة مريحة للعين وبسيطة */
-    .main {
-        background-color: #f1f5f9;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* خلفية متدرجة فخمة وخطوط عصرية */
+    .stApp {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
     }
     
-    /* العناوين بستايل راقي وجذاب */
+    /* العناوين بلون جذاب وأناقة عالية */
     h1, h2, h3 {
-        color: #0f172a;
-        font-weight: 700;
-        letter-spacing: -0.5px;
+        color: #0f172a !important;
+        font-weight: 800 !important;
     }
     
-    /* كروت النماذج بشكل عصري مع تأثير Hover ناعم */
+    /* كروت النماذج بتصميم زجاجي وظل ناعم */
     div.stForm {
-        background: #ffffff;
-        padding: 30px;
-        border-radius: 16px;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-        border: 1px solid #e2e8f0;
-        transition: transform 0.3s ease;
+        background: #ffffff !important;
+        padding: 35px !important;
+        border-radius: 20px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+        border: 2px solid #cbd5e1 !important;
     }
     
-    div.stForm:hover {
-        transform: translateY(-2px);
-    }
-    
-    /* أزرار عصرية بتدرجات ألوان فخمة */
+    /* الأزرار بتدرجات لونية ممتازة وحجم بارز */
     .stButton>button {
-        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        color: white;
-        border-radius: 10px;
-        font-weight: 600;
-        padding: 0.6rem 1.2rem;
-        border: none;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        transition: all 0.3s ease;
-        width: 100%;
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+        color: white !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        font-size: 16px !important;
+        padding: 0.7rem 1.5rem !important;
+        border: none !important;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4) !important;
+        width: 100% !important;
+        transition: all 0.3s ease-in-out;
     }
     
     .stButton>button:hover {
-        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-        box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
-        transform: scale(1.01);
+        background: linear-gradient(135deg, #0369a1 0%, #075985 100%) !important;
+        box-shadow: 0 6px 20px rgba(2, 132, 199, 0.6) !important;
+        transform: translateY(-2px);
     }
     
-    /* تنسيق الكروت الإحصائية (Metrics) */
+    /* مربعات الإحصائيات في الداشبورد */
     div[data-testid="stMetric"] {
-        background: #ffffff;
-        padding: 15px 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        border: 1px solid #e2e8f0;
+        background: #ffffff !important;
+        padding: 20px !important;
+        border-radius: 16px !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+        border-left: 6px solid #0284c7 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -101,13 +96,13 @@ def load_data():
 
 df_products, df_trans, df_inventory = load_data()
 
-# القائمة الجانبية بالاسم المطلوب
+# القائمة الجانبية
 st.sidebar.title("🔐 لوحة التحكم")
 app_mode = st.sidebar.selectbox("اختر الشاشة", ["SmartStock", "⚙️ لوحة التحكم"])
 
 if app_mode == "SmartStock":
     st.title("🛍️ SmartStock")
-    st.markdown("مرحباً بك! تصفح المنتجات وأتمم طلبك بكل راحة واحترافية.")
+    st.markdown("### تُشرّفنا زيارتُك، تصفّح المنتجات وأتمم طلبك بكل سهولة.")
     st.markdown("---")
     
     st.subheader("📋 قائمة المنتجات المتاحة للطلب")
