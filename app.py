@@ -15,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تصميم واجهة طبية متطورة مع تدرجات الأخضر الطبي والأزرق الهادئ ومحاذاة لليمين
+# تصميم واجهة طبية متطورة مع تدرجات الأخضر الطبي وأنيميشن تفاعلي
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
@@ -35,6 +35,22 @@ st.markdown("""
         text-align: right !important;
     }
 
+    /* أنيميشن الظهور التدريجي للعناصر */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animated-section {
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
     /* الشريط الجانبي الطبي الفاخر */
     [data-testid="stSidebar"] {
         background: rgba(8, 26, 24, 0.95) !important;
@@ -43,7 +59,7 @@ st.markdown("""
         direction: rtl;
     }
 
-    /* كروت الجلاس مورفيزم الطبية */
+    /* كروت الجلاس مورفيزم الطبية مع أنيميشن */
     .glass-card {
         background: linear-gradient(135deg, rgba(16, 42, 38, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%);
         backdrop-filter: blur(25px);
@@ -55,9 +71,15 @@ st.markdown("""
         margin-bottom: 25px;
         direction: rtl;
         text-align: right;
+        animation: fadeInUp 0.7s ease-in-out;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .glass-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 30px 60px rgba(52, 211, 153, 0.2);
     }
 
-    /* كروت الإحصائيات الطبية */
+    /* كروت الإحصائيات الطبية الحركية */
     .metric-big-card {
         background: linear-gradient(135deg, rgba(16, 42, 38, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
         border: 1px solid rgba(52, 211, 153, 0.35);
@@ -66,6 +88,13 @@ st.markdown("""
         text-align: center;
         box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         direction: rtl;
+        animation: fadeInUp 0.6s ease-in-out;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .metric-big-card:hover {
+        transform: translateY(-6px) scale(1.02);
+        border-color: #34d399;
+        box-shadow: 0 25px 50px rgba(52, 211, 153, 0.3);
     }
 
     .metric-title {
@@ -91,16 +120,17 @@ st.markdown("""
         border-radius: 22px;
         padding: 26px;
         text-align: center;
-        transition: all 0.35s ease;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         height: 100%;
         direction: rtl;
+        animation: fadeInUp 0.5s ease-in-out;
     }
 
     .product-store-card:hover {
         transform: translateY(-6px) scale(1.02);
         border-color: #34d399;
         background: rgba(16, 42, 38, 0.8);
-        box-shadow: 0 20px 40px rgba(52, 211, 153, 0.2);
+        box-shadow: 0 20px 40px rgba(52, 211, 153, 0.25);
     }
 
     .badge-stock {
@@ -123,6 +153,11 @@ st.markdown("""
         font-weight: 600 !important;
         direction: rtl !important;
         text-align: right !important;
+        transition: all 0.3s ease;
+    }
+    .stTextInput input:focus, .stNumberInput input:focus, .stTextArea textarea:focus {
+        border-color: #34d399 !important;
+        box-shadow: 0 0 20px rgba(52, 211, 153, 0.3) !important;
     }
 
     [data-testid="stForm"] label, .stTextInput label, .stNumberInput label, .stSelectbox label, .stTextArea label {
@@ -143,7 +178,7 @@ st.markdown("""
         border: 1px solid rgba(255, 255, 255, 0.3) !important;
         box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4) !important;
         width: 100% !important;
-        transition: all 0.35s ease;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .stButton>button:hover {
@@ -154,6 +189,7 @@ st.markdown("""
 
     [data-testid="stDataFrame"] {
         direction: rtl;
+        animation: fadeInUp 0.6s ease-in-out;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -193,7 +229,7 @@ df_products, df_trans, df_inventory = load_data()
 
 with st.sidebar:
     st.markdown("""
-        <div style="text-align: right; padding: 15px 0;">
+        <div style="text-align: right; padding: 15px 0;" class="animated-section">
             <h1 style="font-size: 26px; color: #34d399; margin-bottom: 0;">🩺 رعاية ميدكل</h1>
             <p style="font-size: 13px; color: #94a3b8; margin-top: 5px;">إدارة المستلزمات الطبية والأدوية</p>
         </div>
@@ -291,7 +327,7 @@ if app_mode == "متجر المستلزمات الطبية":
                             f"عزيزي المالك،\n\nالمنتج الطبي ({c_name}) وصل رصيده الحالي إلى ({new_bal})، وهو أقل من حد الطلب.\nيرجى التوريد فوراً!"
                         )
 
-                    st.success("🎉 تم تسجيل طلبك الطبي بنجاح، وسيتم التواصل معك للتسليم الشحن!")
+                    st.success("🎉 تم تسجيل طلبك الطبي بنجاح، وسيتم التواصل معك للتسليم والشحن!")
                     st.balloons()
                 except Exception as e:
                     st.error(f"خطأ أثناء تسجيل الطلب: {e}")
@@ -303,7 +339,7 @@ else:
     admin_pass = st.sidebar.text_input("كلمة مرور الأدمن", type="password")
     
     if admin_pass == "lklklk900AR4":
-        st.markdown("<h1 style='font-size: 38px; margin-bottom: 25px; color: #34d399; text-align: right;'>لوحة التحكم الإدارية الطبية</h1>", unsafe_allow_html=True)
+        st.markdown("<div class='animated-section'><h1 style='font-size: 38px; margin-bottom: 25px; color: #34d399; text-align: right;'>لوحة التحكم الإدارية الطبية</h1></div>", unsafe_allow_html=True)
         st.markdown("---")
 
         col1, col2, col3 = st.columns(3)
@@ -342,7 +378,7 @@ else:
                     paper_bgcolor="rgba(0,0,0,0)",
                     plot_bgcolor="rgba(0,0,0,0)",
                     font=dict(color="white", size=12, family="Cairo"),
-                    title_font=dict(color="#34d399", size=18, family="Cairo"),
+                    title=dict(text="توزيع رصيد المنتجات الطبية", x=0.5, xanchor='center', font=dict(color="#34d399", size=18, family="Cairo")),
                     xaxis=dict(tickfont=dict(color="white", size=11), tickangle=-45),
                     yaxis=dict(tickfont=dict(color="white"))
                 )
@@ -355,7 +391,7 @@ else:
                     paper_bgcolor="rgba(0,0,0,0)",
                     plot_bgcolor="rgba(0,0,0,0)",
                     font=dict(color="white", size=13, family="Cairo"),
-                    title_font=dict(color="#34d399", size=18, family="Cairo"),
+                    title=dict(text="نسب توزيع المخزون الطبي", x=0.5, xanchor='center', font=dict(color="#34d399", size=18, family="Cairo")),
                     legend=dict(font=dict(color="white", size=12))
                 )
                 st.plotly_chart(fig_pie, use_container_width=True)
@@ -390,7 +426,7 @@ else:
 
 st.markdown("""
     <hr style='border-color: rgba(52,211,153,0.2); margin-top: 60px;'>
-    <div style='text-align: center; color: #94a3b8; font-size: 14px; padding-bottom: 25px;'>
+    <div style='text-align: center; color: #94a3b8; font-size: 14px; padding-bottom: 25px;' class='animated-section'>
         رعاية ميدكل لنظم الإدارة الطبية &copy; 2026 | جميع الحقوق محفوظة
     </div>
 """, unsafe_allow_html=True)
