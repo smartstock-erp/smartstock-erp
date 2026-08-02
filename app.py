@@ -8,7 +8,7 @@ from email.mime.multipart import MIMEMultipart
 # إعدادات الصفحة
 st.set_page_config(page_title="SmartStock", page_icon="🛍️", layout="wide")
 
-# تصميم UI حديث مع تكبير الأرقام بوضوح تام وإرجاع توازن الخطوط
+# تصميم UI حديث مع تكبير الكلام (Labels) وإرجاع الأرقام للون الأسود الطبيعي
 st.markdown("""
     <style>
     .stApp {
@@ -48,7 +48,7 @@ st.markdown("""
         transform: translateY(-2px);
     }
     
-    /* تنسيق كروت الإحصائيات مع تكبير الأرقام بشكل بارز وواضح جداً */
+    /* تنسيق الكروت: تكبير حجم الكلام (Labels) ولون أسود للأرقام (Values) */
     div[data-testid="stMetric"] {
         background: #ffffff !important;
         padding: 25px !important;
@@ -58,14 +58,14 @@ st.markdown("""
         text-align: center !important;
     }
     div[data-testid="stMetricValue"] {
-        font-size: 42px !important;
-        font-weight: 900 !important;
-        color: #0284c7 !important;
+        font-size: 38px !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
     }
     div[data-testid="stMetricLabel"] {
-        font-size: 16px !important;
-        font-weight: 700 !important;
-        color: #475569 !important;
+        font-size: 19px !important;
+        font-weight: 800 !important;
+        color: #1e293b !important;
     }
     </style>
 """, unsafe_allow_html=True)
