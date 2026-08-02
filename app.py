@@ -243,11 +243,11 @@ with st.sidebar:
     st.markdown(f"<div style='text-align: center; font-size: 13px; color: #34d399; background: rgba(52,211,153,0.1); padding: 8px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(52,211,153,0.2);'>🕒 {current_time_str}</div>", unsafe_allow_html=True)
     
     app_mode = st.selectbox("اختر واجهة الاستخدام", [
-        "\u200eمتجر Curex الطبي", 
+        "متجر Curex الطبي", 
         "لوحة التحكم الرئيسية"
     ])
 
-if app_mode == "\u200eمتجر Curex الطبي":
+if app_mode == "متجر Curex الطبي":
     st.markdown("""
         <div class="glass-card" style="text-align: right; padding: 45px; margin-bottom: 35px;">
             <h1 style="font-size: 38px; color: #34d399; margin-bottom: 12px;">💊 متجر Curex للمستلزمات الطبية والدوائية</h1>
