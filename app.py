@@ -6,130 +6,221 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import plotly.express as px
 from datetime import datetime
+import time
 
+# -----------------------------------------------------------------------------
 # إعدادات الصفحة
+# -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="SmartStock ERP Pro",
-    page_icon="🛍️",
+    page_title="متجر Curex للمستلزمات الطبية",
+    page_icon="🩺",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# تصميم UI حديث مع تباين عالي ووضوح تام للنصوص
+# -----------------------------------------------------------------------------
+# الهوية البصرية والواجهة الطبية الخضراء الاحترافية
+# -----------------------------------------------------------------------------
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+    @import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css');
+
+    :root {
+        --bg-main: #F4FBF7;
+        --primary: #059669;
+        --secondary: #047857;
+        --medical-green: #10B981;
+        --warning: #D97706;
+        --danger: #DC2626;
+        --text-main: #064E3B;
+        --card-bg: #FFFFFF;
+        --border-color: #A7F3D0;
+    }
 
     .stApp {
-        background: linear-gradient(135deg, #090d16 0%, #111e38 50%, #1e3a8a 100%);
-        background-attachment: fixed;
+        background-color: var(--bg-main);
         font-family: 'Cairo', sans-serif;
-        color: #ffffff;
+        color: var(--text-main);
+        direction: rtl;
+        text-align: right;
     }
 
     h1, h2, h3, h4, h5, h6, label, .stMarkdown p {
-        color: #ffffff !important;
+        color: var(--text-main) !important;
         font-weight: 700 !important;
+        text-align: right !important;
     }
 
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animated-section {
+        animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Hero Section الطبي الأخضر */
+    .hero-section {
+        background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+        border: 1px solid #6EE7B7;
+        border-radius: 20px;
+        padding: 40px;
+        margin-bottom: 35px;
+        box-shadow: 0 4px 20px rgba(5, 150, 105, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* الشريط العلوي والنوافذ */
+    .top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #FFFFFF;
+        border-bottom: 2px solid #A7F3D0;
+        padding: 15px 30px;
+        border-radius: 16px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+
+    /* الشريط الجانبي */
     [data-testid="stSidebar"] {
-        background: rgba(11, 17, 32, 0.95) !important;
-        backdrop-filter: blur(16px);
-        border-left: 1px solid rgba(255, 255, 255, 0.15);
+        background: #FFFFFF !important;
+        border-left: 1px solid #A7F3D0;
+        direction: rtl;
     }
 
-    .glass-card {
-        background: rgba(15, 23, 42, 0.85);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 24px;
-        padding: 30px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    /* بطاقات KPI الكبيرة الاحترافية */
+    .kpi-card-medical {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(5, 150, 105, 0.05);
+        border: 1px solid #A7F3D0;
+        transition: all 0.3s ease;
         margin-bottom: 20px;
     }
 
-    .metric-big-card {
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
-        border: 1px solid rgba(56, 189, 248, 0.3);
-        border-radius: 24px;
-        padding: 30px;
-        text-align: center;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    .kpi-card-medical:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(5, 150, 105, 0.15);
+        border-color: var(--primary);
     }
 
-    .metric-title {
-        font-size: 20px !important;
-        font-weight: 700 !important;
-        color: #38bdf8 !important;
+    .kpi-title-large {
+        font-size: 22px !important;
+        font-weight: 800 !important;
+        color: #047857 !important;
         margin-bottom: 10px;
     }
 
-    .metric-value {
-        font-size: 50px !important;
+    .kpi-number-large {
+        font-size: 36px !important;
         font-weight: 900 !important;
-        color: #ffffff !important;
+        color: #064E3B;
     }
 
-    .product-store-card {
-        background: rgba(30, 41, 59, 0.75);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 20px;
+    /* بطاقات المنتجات الطبية */
+    .product-medical-card {
+        background: #FFFFFF;
+        border: 1px solid #A7F3D0;
+        border-radius: 16px;
         padding: 24px;
         text-align: center;
         transition: all 0.3s ease;
         height: 100%;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.02);
     }
 
-    .product-store-card:hover {
-        border-color: #38bdf8;
-        box-shadow: 0 10px 25px rgba(56, 189, 248, 0.25);
+    .product-medical-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--primary);
+        box-shadow: 0 8px 20px rgba(5, 150, 105, 0.15);
     }
 
-    .badge-stock {
-        display: inline-block;
-        padding: 6px 14px;
-        border-radius: 50px;
-        font-size: 14px;
-        font-weight: 700;
-        margin-top: 12px;
+    .product-icon-box {
+        font-size: 36px;
+        color: #059669;
+        background: #ECFDF5;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px auto;
     }
-    .badge-good { background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid #10b981; }
-    .badge-danger { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid #ef4444; }
 
+    /* النماذج وحقول الإدخال */
     .stTextInput input, .stNumberInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
-        background-color: rgba(11, 17, 32, 0.9) !important;
-        color: #ffffff !important;
-        border-radius: 12px !important;
-        border: 1px solid rgba(56, 189, 248, 0.4) !important;
+        background-color: #FFFFFF !important;
+        color: var(--text-main) !important;
+        border-radius: 10px !important;
+        border: 1px solid #6EE7B7 !important;
         font-weight: 600 !important;
     }
 
-    [data-testid="stForm"] label, .stTextInput label, .stNumberInput label, .stSelectbox label, .stTextArea label {
-        color: #38bdf8 !important;
-        font-size: 16px !important;
-        font-weight: 700 !important;
+    .stTextInput input:focus, .stNumberInput input:focus, .stTextArea textarea:focus {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2) !important;
     }
 
+    /* الأزرار الحديثة */
     .stButton>button {
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
         color: white !important;
-        border-radius: 14px !important;
+        border-radius: 10px !important;
         font-weight: 800 !important;
-        font-size: 16px !important;
-        padding: 0.8rem 1.8rem !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4) !important;
+        font-size: 15px !important;
+        padding: 0.7rem 1.5rem !important;
+        border: none !important;
+        box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3) !important;
         width: 100% !important;
+        transition: all 0.3s ease;
     }
 
     .stButton>button:hover {
-        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
-        box-shadow: 0 12px 25px rgba(56, 189, 248, 0.5) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4) !important;
+    }
+
+    /* الجداول الاحترافية */
+    [data-testid="stDataFrame"] {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #A7F3D0;
     }
     </style>
 """, unsafe_allow_html=True)
 
 file_path = "SmartStock ERP Pro.xlsx"
+
+# -----------------------------------------------------------------------------
+# دوال إدارة البيانات
+# -----------------------------------------------------------------------------
+@st.cache_resource
+def get_smtp_server():
+    return "smtp.gmail.com"
+
+@st.cache_data
+def load_data():
+    if not os.path.exists(file_path):
+        return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+    df_products = pd.read_excel(file_path, sheet_name="Products")
+    df_trans = pd.read_excel(file_path, sheet_name="Transactions")
+    df_inventory = pd.read_excel(file_path, sheet_name="Inventory Balance")
+    return df_products, df_trans, df_inventory
+
+def save_data(df_products, df_trans, df_inventory):
+    with pd.ExcelWriter(file_path, engine='openpyxl', mode='w') as writer:
+        df_products.to_excel(writer, sheet_name="Products", index=False)
+        df_trans.to_excel(writer, sheet_name="Transactions", index=False)
+        df_inventory.to_excel(writer, sheet_name="Inventory Balance", index=False)
+    st.cache_data.clear()
 
 def send_email_alert(subject, body):
     try:
@@ -143,7 +234,7 @@ def send_email_alert(subject, body):
         message["Subject"] = subject
         message.attach(MIMEText(body, "plain", "utf-8"))
 
-        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server = smtplib.SMTP(get_smtp_server(), 587)
         server.starttls()
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, receiver_email, message.as_string())
@@ -151,42 +242,149 @@ def send_email_alert(subject, body):
     except Exception as e:
         print(f"فشل إرسال الإيميل: {e}")
 
-def load_data():
-    if not os.path.exists(file_path):
-        st.error(f"⚠️ ملف الإكسيل غير موجود: {file_path}")
-        st.stop()
-    df_products = pd.read_excel(file_path, sheet_name="Products")
-    df_trans = pd.read_excel(file_path, sheet_name="Transactions")
-    df_inventory = pd.read_excel(file_path, sheet_name="Inventory Balance")
-    return df_products, df_trans, df_inventory
-
 df_products, df_trans, df_inventory = load_data()
 
-with st.sidebar:
-    st.markdown("""
-        <div style="text-align: center; padding: 10px 0;">
-            <h1 style="font-size: 26px; color: #38bdf8; margin-bottom: 0;">🛍️ SmartStock</h1>
-            <p style="font-size: 13px; color: #cbd5e1;">إدارة المخزون ونقاط البيع الذكية</p>
-        </div>
-        <hr style="border-color: rgba(255,255,255,0.15);">
-    """, unsafe_allow_html=True)
-    
-    current_time_str = datetime.now().strftime("%Y-%m-%d | %H:%M")
-    st.markdown(f"<div style='text-align: center; font-size: 13px; color: #38bdf8; margin-bottom: 15px;'>🕒 {current_time_str}</div>", unsafe_allow_html=True)
-    
-    app_mode = st.selectbox("اختر الشاشة الرئيسية", ["SmartStock", "⚙️ لوحة التحكم"])
+# -----------------------------------------------------------------------------
+# تنسيق الرسوم البيانية (Plotly) مع تعديل تباعد التسميات والأعمدة
+# -----------------------------------------------------------------------------
+def style_plot(fig, title_text):
+    fig.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#064E3B", size=13, family="Cairo"),
+        title=dict(text=title_text, x=0.5, xanchor='center', font=dict(color="#047857", size=18, family="Cairo")),
+        legend=dict(font=dict(color="#064E3B", size=11), x=1.02, y=0.5, traceorder="normal"),
+        margin=dict(t=60, b=80, l=40, r=120)
+    )
+    return fig
 
-if app_mode == "SmartStock":
+def draw_charts(df_inventory, df_trans):
+    st.markdown("<br><h3 style='margin-bottom: 25px; color: #047857;'>📊 التحليلات والتقارير الطبية</h3>", unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if not df_trans.empty and "Date" in df_trans.columns and "Quantity" in df_trans.columns:
+            fig_line = px.line(df_trans, x="Date", y="Quantity", color="Item Name" if "Item Name" in df_trans.columns else None, template="plotly_white", markers=True)
+            st.plotly_chart(style_plot(fig_line, "حركة المستلزمات اليومية (Line Chart)"), use_container_width=True)
+        else:
+            st.info("لا توجد بيانات كافية لرسم الخط البياني للحركات.")
+
+    with col2:
+        if not df_inventory.empty:
+            # تعديل التدرج اللوني إلى أخضر Greens وعكس زاوية الأسماء لتظهر بوضوح وإظهار الأعمدة بشكل أفضل
+            fig_bar = px.bar(df_inventory, x="Item Name", y="Current Balance", template="plotly_white", color="Current Balance", color_continuous_scale="Greens")
+            fig_bar.update_xaxes(tickangle=-45, tickfont=dict(size=11))
+            st.plotly_chart(style_plot(fig_bar, "مستوى المخزون الحالي (Bar Chart)"), use_container_width=True)
+
+    col3, col4 = st.columns(2)
+    with col3:
+        if not df_inventory.empty:
+            fig_pie = px.pie(df_inventory, names="Item Name", values="Current Balance", template="plotly_white", hole=0.3)
+            fig_pie.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(style_plot(fig_pie, "توزيع المخزون النسبي (Pie Chart)"), use_container_width=True)
+
+    with col4:
+        if not df_inventory.empty:
+            sold_col = "Total Sold" if "Total Sold" in df_inventory.columns else "Current Balance"
+            fig_donut = px.pie(df_inventory, names="Item Name", values=sold_col, template="plotly_white", hole=0.6)
+            fig_donut.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(style_plot(fig_donut, "حصة مبيعات المنتجات (Donut Chart)"), use_container_width=True)
+
+    # تحليل أكثر وأقل المنتجات مبيعًا
+    c_best, c_least = st.columns(2)
+    with c_best:
+        st.markdown("""
+            <div class="kpi-card-medical">
+                <div style="font-size: 18px; color: #10B981; font-weight: 800; margin-bottom: 8px;"><i class="bi bi-award-fill"></i> أكثر المنتجات مبيعًا</div>
+                <p style="font-size: 18px; font-weight: 700; color: #064E3B;">الأعلى طلباً في المنظومة الطبية</p>
+            </div>
+        """, unsafe_allow_html=True)
+        if not df_inventory.empty:
+            top_col = "Total Sold" if "Total Sold" in df_inventory.columns else "Current Balance"
+            top_prod = df_inventory.sort_values(by=top_col, ascending=False).iloc[0]["Item Name"]
+            st.success(f"المنتج الأبرز: **{top_prod}**")
+
+    with c_least:
+        st.markdown("""
+            <div class="kpi-card-medical">
+                <div style="font-size: 18px; color: #DC2626; font-weight: 800; margin-bottom: 8px;"><i class="bi bi-exclamation-triangle-fill"></i> أقل المنتجات مبيعًا</div>
+                <p style="font-size: 18px; font-weight: 700; color: #064E3B;">الأقل طلباً في المنظومة الطبية</p>
+            </div>
+        """, unsafe_allow_html=True)
+        if not df_inventory.empty:
+            least_col = "Total Sold" if "Total Sold" in df_inventory.columns else "Current Balance"
+            least_prod = df_inventory.sort_values(by=least_col, ascending=True).iloc[0]["Item Name"]
+            st.error(f"المنتج الأقل مبيعاً: **{least_prod}**")
+
+# -----------------------------------------------------------------------------
+# لوحة التحكم الرئيسية (Dashboard)
+# -----------------------------------------------------------------------------
+def create_dashboard():
     st.markdown("""
-        <div class="glass-card" style="text-align: center; padding: 40px; margin-bottom: 30px;">
-            <h1 style="font-size: 36px; color: #38bdf8; margin-bottom: 10px;">🛍️ متجر SmartStock الرقمي</h1>
-            <p style="font-size: 17px; color: #e2e8f0;">تُشرّفنا زيارتُك، تصفّح المنتجات المتاحة وأتمم طلبك بكل سهولة ويسر.</p>
+        <div class="animated-section">
+            <h1 style="font-size: 32px; margin-bottom: 10px; color: #047857;"><i class="bi bi-speedometer2"></i> لوحة التحكم الإدارية</h1>
+            <p style="color: #047857; font-size: 15px; margin-bottom: 25px;">متابعة شاملة لحالة المخزون، العمليات، والمؤشرات الحيوية للمتجر الطبي.</p>
         </div>
     """, unsafe_allow_html=True)
+
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown(f"""
+            <div class="kpi-card-medical">
+                <div style="font-size: 28px; color: #059669; margin-bottom: 8px;"><i class="bi bi-box-seam"></i></div>
+                <div class="kpi-title-large">📦 إجمالي المنتجات</div>
+                <div class="kpi-number-large">{len(df_products)}</div>
+            </div>
+        """, unsafe_allow_html=True)
+    with c2:
+        st.markdown(f"""
+            <div class="kpi-card-medical">
+                <div style="font-size: 28px; color: #10B981; margin-bottom: 8px;"><i class="bi bi-arrow-repeat"></i></div>
+                <div class="kpi-title-large">🔄 إجمالي العمليات والطلبات</div>
+                <div class="kpi-number-large">{len(df_trans)}</div>
+            </div>
+        """, unsafe_allow_html=True)
+    with c3:
+        reorder_count = len(df_inventory[df_inventory["Reorder Point"].astype(str).str.contains("Reorder|🚨", na=False)]) if not df_inventory.empty else 0
+        st.markdown(f"""
+            <div class="kpi-card-medical">
+                <div style="font-size: 28px; color: #DC2626; margin-bottom: 8px;"><i class="bi bi-exclamation-octagon"></i></div>
+                <div class="kpi-title-large">🚨 منتجات تحتاج للطلب</div>
+                <div class="kpi-number-large">{reorder_count}</div>
+            </div>
+        """, unsafe_allow_html=True)
+
+    draw_charts(df_inventory, df_trans)
+
+    st.markdown("<hr style='border-color: #A7F3D0; margin: 35px 0;'>", unsafe_allow_html=True)
+    st.subheader("📋 تفاصيل المخزون الطبي الحالي")
+    search_inv = st.text_input("بحث سريع في المخزون...", key="search_inv_db")
+    filtered_df_inv = df_inventory.copy()
+    if search_inv and not df_inventory.empty:
+        filtered_df_inv = df_inventory[df_inventory["Item Name"].astype(str).str.contains(search_inv, case=False, na=False)]
+    st.dataframe(filtered_df_inv, use_container_width=True)
+
+    st.markdown("<hr style='border-color: #A7F3D0; margin: 35px 0;'>", unsafe_allow_html=True)
+    st.subheader("📝 سجل الطلبات والعمليات")
+    st.dataframe(df_trans, use_container_width=True)
+
+# -----------------------------------------------------------------------------
+# صفحة المتجر الاحترافية
+# -----------------------------------------------------------------------------
+def create_store():
+    st.markdown("""
+        <div class="hero-section animated-section">
+            <div>
+                <h1 style="font-size: 32px; color: #047857; margin-bottom: 10px;"><i class="bi bi-hospital"></i> متجر Curex للمستلزمات الطبية</h1>
+                <p style="font-size: 15px; color: #064E3B; max-width: 600px;">نوفر أحدث الأجهزة والمستلزمات الطبية بأعلى معايير الجودة والنظافة لتلبية احتياجات القطاع الصحي.</p>
+            </div>
+            <div style="font-size: 60px;">🩺</div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    search_query = st.text_input("🔍 ابحث عن مستلزم طبي أو دواء...", "")
     
-    search_query = st.text_input("🔍 ابحث عن منتج بالمخزون...", "")
-    
-    st.markdown("<h3 style='margin-top: 30px; margin-bottom: 20px; color: #38bdf8;'>📋 المنتجات المتاحة للطلب الفوري</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin-top: 30px; margin-bottom: 20px; color: #047857;'>المستلزمات الطبية المتاحة للطلب الفوري</h3>", unsafe_allow_html=True)
     
     if not df_inventory.empty:
         filtered_inv = df_inventory.copy()
@@ -198,53 +396,52 @@ if app_mode == "SmartStock":
             item_name = row.get("Item Name", "منتج بدون اسم")
             current_bal = row.get("Current Balance", 0)
             
-            if current_bal > 5:
-                stock_badge = f'<span class="badge-stock badge-good">متوفر: {current_bal}</span>'
-            else:
-                stock_badge = f'<span class="badge-stock badge-danger">قارب على النفاد: {current_bal}</span>'
+            stock_badge = f'<span style="background: #DCFCE7; color: #16A34A; padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 12px;"><i class="bi bi-check-circle"></i> متوفر: {current_bal}</span>' if current_bal > 5 else f'<span style="background: #FEE2E2; color: #DC2626; padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 12px;"><i class="bi bi-exclamation-circle"></i> قارب على النفاد: {current_bal}</span>'
                 
             with cols[idx % 3]:
                 st.markdown(f"""
-                    <div class="product-store-card">
-                        <div style="font-size: 40px; margin-bottom: 10px;">📦</div>
-                        <h4 style="color: #ffffff; font-size: 18px; margin-bottom: 10px;">{item_name}</h4>
+                    <div class="product-medical-card">
+                        <div class="product-icon-box"><i class="bi bi-capsule"></i></div>
+                        <h4 style="color: #064E3B; font-size: 17px; margin-bottom: 15px;">{item_name}</h4>
                         {stock_badge}
                     </div>
                 """, unsafe_allow_html=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
 
-    st.markdown("<h3 style='margin-top: 20px; margin-bottom: 20px; color: #38bdf8;'>📝 نموذج تقديم الطلب</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin-top: 20px; margin-bottom: 20px; color: #047857;'>تفضل بملء بياناتك لإتمام الطلب</h3>", unsafe_allow_html=True)
     
     with st.form("customer_order_full"):
-        c_name = st.selectbox("اختر المنتج المطلوب", df_inventory["Item Name"].tolist() if "Item Name" in df_inventory.columns else [])
+        c_name = st.selectbox("اختر المستلزم الطبي المطلوب", df_inventory["Item Name"].tolist() if "Item Name" in df_inventory.columns else [])
         c_qty = st.number_input("الكمية المطلوبة", min_value=1, value=1)
         
         col1, col2 = st.columns(2)
         with col1:
-            c_buyer = st.text_input("اسمك الكريم")
+            c_buyer = st.text_input("اسمك الكريم / اسم المؤسسة الطبية")
             c_phone = st.text_input("رقم الهاتـف / الجوال")
         with col2:
             c_email = st.text_input("البريد الإلكتروني")
-            c_payment = st.selectbox("طريقة الدفع", ["الدفع عند الاستلام (Cash)", "تحويل بنكي / إنستاباي", "بطاقة ائتمان"])
+            c_payment = st.selectbox("طريقة الدفع", ["الدفع عند الاستلام (Cash)", "تحويل بنكي", "بطاقة ائتمان"])
             
-        c_address = st.text_area("عنوان التوصيل بالتفصيل (المدينة، الشارع، رقم العمارة)")
+        c_address = st.text_area("عنوان التوصيل أو اسم العيادة/المستشفى بالتفصيل")
         
-        submit_order = st.form_submit_button("🚀 تأكيد وإرسال الطلب الآن")
+        submit_order = st.form_submit_button("تأكيد وإرسال الطلب الطبي")
         if submit_order:
             if c_buyer and c_phone and c_address and c_name:
-                try:
-                    with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+                with st.spinner("جاري معالجة وإرسال الطلب الطبي..."):
+                    time.sleep(1)
+                    try:
                         idx = df_inventory[df_inventory["Item Name"] == c_name].index
                         if not idx.empty:
                             current_bal = df_inventory.loc[idx[0], "Current Balance"]
                             new_bal = max(0, current_bal - c_qty)
                             df_inventory.loc[idx[0], "Current Balance"] = new_bal
+                            
                             if "Total Sold" in df_inventory.columns:
                                 df_inventory.loc[idx[0], "Total Sold"] += c_qty
+                            else:
+                                df_inventory.loc[idx[0], "Total Sold"] = c_qty
 
-                        df_inventory.to_excel(writer, sheet_name="Inventory Balance", index=False)
-                        
                         order_notes = f"الاسم: {c_buyer} | الهاتف: {c_phone} | الإيميل: {c_email} | الدفع: {c_payment} | العنوان: {c_address}"
                         new_t = pd.DataFrame([{
                             "Item Name": c_name, "Transaction Type": "طلب عميل جديد",
@@ -252,184 +449,106 @@ if app_mode == "SmartStock":
                             "Date": pd.Timestamp.now().strftime("%Y-%m-%d %H:%M")
                         }])
                         df_trans_updated = pd.concat([df_trans, new_t], ignore_index=True)
-                        df_trans_updated.to_excel(writer, sheet_name="Transactions", index=False)
-                        df_products.to_excel(writer, sheet_name="Products", index=False)
+                        
+                        save_data(df_products, df_trans_updated, df_inventory)
 
-                    reorder_val = df_inventory.loc[idx[0], "Reorder Point"]
-                    if new_bal <= int(str(reorder_val).replace("Reorder", "").strip() or 0):
-                        send_email_alert(
-                            f"⚠️ تنبيه عاجل: نقص مخزون الصنف {c_name}",
-                            f"عزيزي المالك،\n\nالمنتج ({c_name}) وصل رصيده الحالي إلى ({new_bal})، وهو أقل من حد الطلب.\nيرجى التوريد فوراً!"
-                        )
+                        reorder_val = df_inventory.loc[idx[0], "Reorder Point"]
+                        if new_bal <= int(str(reorder_val).replace("Reorder", "").strip() or 0):
+                            send_email_alert(
+                                f"⚠️ تنبيه عاجل: نقص مخزون الصنف الطبي {c_name}",
+                                f"عزيزي المالك،\n\nالمنتج الطبي ({c_name}) في متجر Curex وصل رصيده الحالي إلى ({new_bal})، وهو أقل من حد الطلب.\nيرجى التوريد فوراً!"
+                            )
 
-                    st.success("🎉 تم تسجيل طلبك بنجاح، وسيتم التواصل معك لتأكيد الشحن!")
-                    st.balloons()
-                except Exception as e:
-                    st.error(f"خطأ أثناء تسجيل الطلب: {e}")
+                        st.success("🎉 تم تسجيل طلبك الطبي بنجاح لدى Curex، وسيتم التواصل معك للتسليم والشحن!")
+                        st.balloons()
+                    except Exception as e:
+                        st.error(f"خطأ أثناء تسجيل الطلب: {e}")
             else:
                 st.warning("⚠️ يرجى ملء البيانات الأساسية (الاسم، الهاتف، العنوان، المنتج).")
 
-else:
-    st.sidebar.markdown("---")
-    admin_pass = st.sidebar.text_input("كلمة مرور الأدمن", type="password")
+# -----------------------------------------------------------------------------
+# الشريط العلوي وتجربة المستخدم
+# -----------------------------------------------------------------------------
+current_time_str = datetime.now().strftime("%Y-%m-%d | %H:%M")
+st.markdown(f"""
+    <div class="top-nav animated-section">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 22px; color: #059669;"><i class="bi bi-heart-pulse-fill"></i></span>
+            <span style="font-size: 17px; font-weight: 800; color: #047857;">Curex Medical</span>
+        </div>
+        <div style="font-size: 13px; color: #047857; background: #ECFDF5; padding: 5px 12px; border-radius: 20px; border: 1px solid #6EE7B7;">
+            <i class="bi bi-clock"></i> الوقت الحالي: {current_time_str}
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span style="color: #10B981; font-weight: 700; font-size: 13px;"><i class="bi bi-check-circle-fill"></i> متصل وجاهز</span>
+            <span style="background: #E2E8F0; color: #064E3B; padding: 6px 10px; border-radius: 50%; font-size: 14px;"><i class="bi bi-person-fill"></i></span>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
+# -----------------------------------------------------------------------------
+# الشريط الجانبي (Sidebar)
+# -----------------------------------------------------------------------------
+with st.sidebar:
+    st.markdown("""
+        <div style="text-align: center; padding: 15px 0;" class="animated-section">
+            <div style="font-size: 40px; color: #059669; margin-bottom: 6px;"><i class="bi bi-plus-square-fill"></i></div>
+            <h1 style="font-size: 22px; color: #047857; margin-bottom: 0; font-weight: 900;">Curex Medical</h1>
+            <p style="font-size: 12px; color: #064E3B; margin-top: 4px;">متجر المستلزمات الطبية</p>
+        </div>
+        <hr style="border-color: #A7F3D0; margin-bottom: 15px;">
+    """, unsafe_allow_html=True)
     
+    app_mode = st.selectbox("🎯 اختر واجهة الاستخدام", [
+        "متجر Curex الطبي", 
+        "لوحة التحكم الرئيسية"
+    ])
+    
+    st.markdown("---")
+    admin_pass = st.text_input("🔒 كلمة مرور الأدمن", type="password")
+
+# -----------------------------------------------------------------------------
+# التنقل بين واجهات النظام
+# -----------------------------------------------------------------------------
+if app_mode == "متجر Curex الطبي":
+    create_store()
+else:
     if admin_pass == "lklklk900AR4":
-        st.markdown("<h1 style='font-size: 38px; margin-bottom: 25px; color: #38bdf8;'>📊 لوحة التحكم الرئيسية (Admin Dashboard)</h1>", unsafe_allow_html=True)
-        st.markdown("---")
-
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            prod_len = len(df_products)
-            st.markdown(f"""
-                <div class="metric-big-card">
-                    <div style="font-size: 35px; margin-bottom: 10px;">📦</div>
-                    <div class="metric-title">إجمالي المنتجات</div>
-                    <div class="metric-value">{prod_len}</div>
-                </div>
-            """, unsafe_allow_html=True)
-        with col2:
-            trans_len = len(df_trans)
-            st.markdown(f"""
-                <div class="metric-big-card">
-                    <div style="font-size: 35px; margin-bottom: 10px;">🔄</div>
-                    <div class="metric-title">إجمالي العمليات والطلبات</div>
-                    <div class="metric-value">{trans_len}</div>
-                </div>
-            """, unsafe_allow_html=True)
-        with col3:
-            reorder_count = len(df_inventory[df_inventory["Reorder Point"].astype(str).str.contains("Reorder|🚨", na=False)])
-            st.markdown(f"""
-                <div class="metric-big-card">
-                    <div style="font-size: 35px; margin-bottom: 10px;">🚨</div>
-                    <div class="metric-title">منتجات تحتاج للطلب</div>
-                    <div class="metric-value">{reorder_count}</div>
-                </div>
-            """, unsafe_allow_html=True)
-
-        st.markdown("<br><h3 style='margin-bottom: 15px; color: #38bdf8;'>📈 الرسوم البيانية والتحليلات المتقدمة</h3>", unsafe_allow_html=True)
+        create_dashboard()
         
-        chart_col1, chart_col2 = st.columns(2)
-        with chart_col1:
-            if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
-                # تلوين الأعمدة ديناميكياً بـ Color Scale مضيء وجذاب بناءً على قيمة الرصيد
-                fig_bar = px.bar(
-                    df_inventory, 
-                    x="Item Name", 
-                    y="Current Balance", 
-                    color="Current Balance",
-                    color_continuous_scale="Tealgrn", 
-                    title="مستوى المخزون الحالي (Bar Chart)", 
-                    template="plotly_dark"
-                )
-                
-                fig_bar.update_layout(
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="white", size=12, family="Cairo"),
-                    title_font=dict(color="#38bdf8", size=18, family="Cairo"),
-                    xaxis=dict(
-                        title_font=dict(color="white"),
-                        tickfont=dict(color="white", size=11),
-                        tickangle=-45
-                    ),
-                    yaxis=dict(title_font=dict(color="white"), tickfont=dict(color="white"))
-                )
-                st.plotly_chart(fig_bar, use_container_width=True)
-                
-        with chart_col2:
-            if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
-                # تحويل الرسم الدائري لـ Donut Chart أنيق وإخفاء النصوص المتداخلة داخله لتظهر بنظافة عند الهوفر
-                fig_donut = px.pie(
-                    df_inventory, 
-                    names="Item Name", 
-                    values="Current Balance", 
-                    hole=0.4,
-                    title="حصة مبيعات المنتجات (Donut Chart)", 
-                    template="plotly_dark"
-                )
-                fig_donut.update_traces(textinfo='none', hoverinfo='label+percent+value')
-                fig_donut.update_layout(
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="white", size=13, family="Cairo"),
-                    title_font=dict(color="#38bdf8", size=18, family="Cairo"),
-                    legend=dict(font=dict(color="white", size=11))
-                )
-                st.plotly_chart(fig_donut, use_container_width=True)
-
-        # صف ثاني للرسوم الإضافية
-        chart_col3, chart_col4 = st.columns(2)
-        with chart_col3:
-            if not df_trans.empty and "Date" in df_trans.columns and "Quantity" in df_trans.columns:
-                fig_line = px.line(
-                    df_trans, 
-                    x="Date", 
-                    y="Quantity", 
-                    color="Item Name",
-                    markers=True,
-                    title="حركة المستلزمات اليومية (Line Chart)", 
-                    template="plotly_dark"
-                )
-                fig_line.update_layout(
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="white", size=12, family="Cairo"),
-                    title_font=dict(color="#38bdf8", size=18, family="Cairo"),
-                    legend=dict(font=dict(color="white", size=10))
-                )
-                st.plotly_chart(fig_line, use_container_width=True)
-
-        with chart_col4:
-            if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
-                # رسم دائري آخر نسبي (Pie Chart) بنصوص نظيفة ومفاتيح واضحة
-                fig_pie2 = px.pie(
-                    df_inventory, 
-                    names="Item Name", 
-                    values="Current Balance", 
-                    title="توزيع المخزون النسبي (Pie Chart)", 
-                    template="plotly_dark"
-                )
-                fig_pie2.update_traces(textinfo='none', hoverinfo='label+percent+value')
-                fig_pie2.update_layout(
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="white", size=13, family="Cairo"),
-                    title_font=dict(color="#38bdf8", size=18, family="Cairo"),
-                    legend=dict(font=dict(color="white", size=11))
-                )
-                st.plotly_chart(fig_pie2, use_container_width=True)
-
-        st.markdown("<hr style='border-color: rgba(255,255,255,0.15); margin: 30px 0;'>", unsafe_allow_html=True)
-        st.subheader("📦 تفاصيل المخزون الحالي")
-        st.dataframe(df_inventory, use_container_width=True)
-
-        st.markdown("<hr style='border-color: rgba(255,255,255,0.15); margin: 30px 0;'>", unsafe_allow_html=True)
-        st.subheader("لوحة متابعة طلبات العملاء والعمليات (Live Orders)")
-        st.dataframe(df_trans, use_container_width=True)
-
-        st.markdown("<hr style='border-color: rgba(255,255,255,0.15); margin: 30px 0;'>", unsafe_allow_html=True)
-        st.subheader("➕ إضافة صنف جديد للمخزن")
+        st.markdown("<hr style='border-color: #A7F3D0; margin: 35px 0;'>", unsafe_allow_html=True)
+        st.subheader("➕ إضافة صنف طبى جديد للمخزن")
         with st.form("add_product"):
-            p_name = st.text_input("اسم المنتج الجديد")
+            p_name = st.text_input("اسم المنتج أو الدواء الجديد")
             p_bal = st.number_input("الرصيد الابتدائي", min_value=0, value=10)
             p_reorder = st.number_input("حد الطلب (Reorder Point)", min_value=0, value=5)
-            p_submit = st.form_submit_button("إضافة الصنف للملف")
+            p_submit = st.form_submit_button("إضافة الصنف للمخزن")
             
             if p_submit and p_name:
-                new_row = pd.DataFrame([{"Item Name": p_name, "Current Balance": p_bal, "Reorder Point": p_reorder}])
+                new_row = pd.DataFrame([{"Item Name": p_name, "Current Balance": p_bal, "Reorder Point": p_reorder, "Total Sold": 0}])
                 df_inventory_updated = pd.concat([df_inventory, new_row], ignore_index=True)
-                with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
-                    df_inventory_updated.to_excel(writer, sheet_name="Inventory Balance", index=False)
-                    df_trans.to_excel(writer, sheet_name="Transactions", index=False)
-                    df_products.to_excel(writer, sheet_name="Products", index=False)
-                st.success(f"✅ تم إضافة المنتج '{p_name}' بنجاح!")
+                save_data(df_products, df_trans, df_inventory_updated)
+                st.success(f"✅ تم إضافة الصنف الطبي '{p_name}' بنجاح!")
                 st.rerun()
     else:
-        st.warning("🔒 من فضلك ادخل كلمة مرور الأدمن الصحيحة في القائمة الجانبية لعرض لوحة التحكم.")
+        st.warning("🔒 من فضلك ادخل كلمة مرور الأدمن الصحيحة في القائمة الجانبية لعرض لوحة التحكم الكاملة.")
 
+# -----------------------------------------------------------------------------
+# الفوتر الاحترافي (Footer)
+# -----------------------------------------------------------------------------
 st.markdown("""
-    <hr style='border-color: rgba(255,255,255,0.15); margin-top: 50px;'>
-    <div style='text-align: center; color: #94a3b8; font-size: 14px; padding-bottom: 20px;'>
-        SmartStock ERP Pro &copy; 2026 | جميع الحقوق محفوظة | تصميم UI/UX فائق الاحترافية
+    <hr style='border-color: #A7F3D0; margin-top: 50px;'>
+    <div style='display: flex; justify-content: space-between; align-items: center; color: #064E3B; font-size: 13px; padding-bottom: 25px;' class='animated-section'>
+        <div>
+            <strong style="color: #047857;">Curex Medical</strong> - نظام إدارة المستلزمات الطبية المتطور
+        </div>
+        <div>
+            &copy; 2026 جميع الحقوق محفوظة
+        </div>
+        <div style="display: flex; gap: 20px;">
+            <span><i class="bi bi-globe"></i> الموقع الرسمي</span>
+            <span><i class="bi bi-shield-check"></i> الأمان الطبي</span>
+            <span><i class="bi bi-headset"></i> الدعم الفني</span>
+        </div>
     </div>
 """, unsafe_allow_html=True)
