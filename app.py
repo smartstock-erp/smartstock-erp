@@ -321,12 +321,28 @@ else:
         with chart_col1:
             if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
                 fig_bar = px.bar(df_inventory, x="Item Name", y="Current Balance", title="توزيع الرصيد الحالي للمنتجات", template="plotly_dark")
-                fig_bar.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="white"))
+                # تم ضبط لون العناوين والمحاور لتكون بيضاء وواضحة جداً
+                fig_bar.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    font=dict(color="white", size=14, family="Cairo"),
+                    title_font=dict(color="#38bdf8", size=18, family="Cairo"),
+                    xaxis=dict(title_font=dict(color="white"), tickfont=dict(color="white")),
+                    yaxis=dict(title_font=dict(color="white"), tickfont=dict(color="white"))
+                )
                 st.plotly_chart(fig_bar, use_container_width=True)
+                
         with chart_col2:
             if not df_inventory.empty and "Item Name" in df_inventory.columns and "Current Balance" in df_inventory.columns:
                 fig_pie = px.pie(df_inventory, names="Item Name", values="Current Balance", title="حصة المخزون من الأصناف", template="plotly_dark")
-                fig_pie.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="white"))
+                # تم ضبط لون العناوين والليجند لتكون واضحة
+                fig_pie.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)",
+                    plot_bgcolor="rgba(0,0,0,0)",
+                    font=dict(color="white", size=13, family="Cairo"),
+                    title_font=dict(color="#38bdf8", size=18, family="Cairo"),
+                    legend=dict(font=dict(color="white", size=12))
+                )
                 st.plotly_chart(fig_pie, use_container_width=True)
 
         st.markdown("<hr style='border-color: rgba(255,255,255,0.15); margin: 30px 0;'>", unsafe_allow_html=True)
