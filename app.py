@@ -9,19 +9,22 @@ from datetime import datetime
 
 # إعدادات الصفحة
 st.set_page_config(
-    page_title="MedStock ERP Pro",
+    page_title="Curex Medical ERP",
     page_icon="🩺",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# تصميم واجهة طبية متطورة مع تدرجات الأخضر الطبي وأنيميشن تفاعلي
+# تصميم واجهة Curex الطبية المتطورة مع خلفية طبية وأنيميشن تفاعلي
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
 
     .stApp {
-        background: radial-gradient(circle at 10% 20%, #061a18 0%, #0d2824 40%, #0f172a 100%);
+        background: linear-gradient(rgba(6, 26, 24, 0.88), rgba(15, 23, 42, 0.92)), 
+                    url('https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?q=80&w=1920&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
         background-attachment: fixed;
         font-family: 'Cairo', sans-serif;
         color: #ffffff;
@@ -51,7 +54,7 @@ st.markdown("""
         animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* الشريط الجانبي الطبي الفاخر */
+    /* الشريط الجانبي الطبي الفاخر لبراند Curex */
     [data-testid="stSidebar"] {
         background: rgba(8, 26, 24, 0.95) !important;
         backdrop-filter: blur(25px);
@@ -61,7 +64,7 @@ st.markdown("""
 
     /* كروت الجلاس مورفيزم الطبية مع أنيميشن */
     .glass-card {
-        background: linear-gradient(135deg, rgba(16, 42, 38, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%);
+        background: linear-gradient(135deg, rgba(16, 42, 38, 0.75) 0%, rgba(15, 23, 42, 0.9) 100%);
         backdrop-filter: blur(25px);
         -webkit-backdrop-filter: blur(25px);
         border: 1px solid rgba(52, 211, 153, 0.25);
@@ -114,7 +117,7 @@ st.markdown("""
 
     /* كروت المنتجات الطبية */
     .product-store-card {
-        background: rgba(16, 42, 38, 0.6);
+        background: rgba(16, 42, 38, 0.7);
         backdrop-filter: blur(15px);
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 22px;
@@ -129,7 +132,7 @@ st.markdown("""
     .product-store-card:hover {
         transform: translateY(-6px) scale(1.02);
         border-color: #34d399;
-        background: rgba(16, 42, 38, 0.8);
+        background: rgba(16, 42, 38, 0.9);
         box-shadow: 0 20px 40px rgba(52, 211, 153, 0.25);
     }
 
@@ -230,8 +233,8 @@ df_products, df_trans, df_inventory = load_data()
 with st.sidebar:
     st.markdown("""
         <div style="text-align: right; padding: 15px 0;" class="animated-section">
-            <h1 style="font-size: 26px; color: #34d399; margin-bottom: 0;">🩺 رعاية ميدكل</h1>
-            <p style="font-size: 13px; color: #94a3b8; margin-top: 5px;">إدارة المستلزمات الطبية والأدوية</p>
+            <h1 style="font-size: 26px; color: #34d399; margin-bottom: 0;">💊 Curex Medical</h1>
+            <p style="font-size: 13px; color: #94a3b8; margin-top: 5px;">نظام إدارة المستلزمات الطبية والأدوية</p>
         </div>
         <hr style="border-color: rgba(52,211,153,0.2);">
     """, unsafe_allow_html=True)
@@ -239,12 +242,12 @@ with st.sidebar:
     current_time_str = datetime.now().strftime("%Y-%m-%d | %H:%M")
     st.markdown(f"<div style='text-align: center; font-size: 13px; color: #34d399; background: rgba(52,211,153,0.1); padding: 8px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(52,211,153,0.2);'>🕒 {current_time_str}</div>", unsafe_allow_html=True)
     
-    app_mode = st.selectbox("اختر واجهة الاستخدام", ["متجر المستلزمات الطبية", "لوحة التحكم الرئيسية"])
+    app_mode = st.selectbox("اختر واجهة الاستخدام", ["متجر Curex الطبي", "لوحة التحكم الرئيسية"])
 
-if app_mode == "متجر المستلزمات الطبية":
+if app_mode == "متجر Curex الطبي":
     st.markdown("""
         <div class="glass-card" style="text-align: right; padding: 45px; margin-bottom: 35px;">
-            <h1 style="font-size: 38px; color: #34d399; margin-bottom: 12px;">🩺 متجر المستلزمات الطبية والدوائية</h1>
+            <h1 style="font-size: 38px; color: #34d399; margin-bottom: 12px;">💊 متجر Curex للمستلزمات الطبية والدوائية</h1>
             <p style="font-size: 18px; color: #cbd5e1;">تُشرّفنا زيارتُك، تصفّح المنتجات وأتمم طلبك بكل سهولة.</p>
         </div>
     """, unsafe_allow_html=True)
@@ -271,7 +274,7 @@ if app_mode == "متجر المستلزمات الطبية":
             with cols[idx % 3]:
                 st.markdown(f"""
                     <div class="product-store-card">
-                        <div style="font-size: 45px; margin-bottom: 12px;">💊</div>
+                        <div style="font-size: 45px; margin-bottom: 12px;">🩺</div>
                         <h4 style="color: #ffffff; font-size: 19px; margin-bottom: 12px;">{item_name}</h4>
                         {stock_badge}
                     </div>
@@ -324,10 +327,10 @@ if app_mode == "متجر المستلزمات الطبية":
                     if new_bal <= int(str(reorder_val).replace("Reorder", "").strip() or 0):
                         send_email_alert(
                             f"⚠️ تنبيه عاجل: نقص مخزون الصنف الطبي {c_name}",
-                            f"عزيزي المالك،\n\nالمنتج الطبي ({c_name}) وصل رصيده الحالي إلى ({new_bal})، وهو أقل من حد الطلب.\nيرجى التوريد فوراً!"
+                            f"عزيزي المالك،\n\nالمنتج الطبي ({c_name}) في براند Curex وصل رصيده الحالي إلى ({new_bal})، وهو أقل من حد الطلب.\nيرجى التوريد فوراً!"
                         )
 
-                    st.success("🎉 تم تسجيل طلبك الطبي بنجاح، وسيتم التواصل معك للتسليم والشحن!")
+                    st.success("🎉 تم تسجيل طلبك الطبي بنجاح لدى Curex، وسيتم التواصل معك للتسليم والشحن!")
                     st.balloons()
                 except Exception as e:
                     st.error(f"خطأ أثناء تسجيل الطلب: {e}")
@@ -339,7 +342,7 @@ else:
     admin_pass = st.sidebar.text_input("كلمة مرور الأدمن", type="password")
     
     if admin_pass == "lklklk900AR4":
-        st.markdown("<div class='animated-section'><h1 style='font-size: 38px; margin-bottom: 25px; color: #34d399; text-align: right;'>لوحة التحكم الإدارية الطبية</h1></div>", unsafe_allow_html=True)
+        st.markdown("<div class='animated-section'><h1 style='font-size: 38px; margin-bottom: 25px; color: #34d399; text-align: right;'>لوحة التحكم الإدارية - Curex</h1></div>", unsafe_allow_html=True)
         st.markdown("---")
 
         col1, col2, col3 = st.columns(3)
@@ -368,7 +371,7 @@ else:
                 </div>
             """, unsafe_allow_html=True)
 
-        st.markdown("<br><h3 style='margin-bottom: 20px; color: #34d399; text-align: right;'>التحليلات والرسوم البيانية للمخزون</h3>", unsafe_allow_html=True)
+        st.markdown("<br><h3 style='margin-bottom: 20px; color: #34d399; text-align: right;'>التحليلات والرسوم البيانية لمخزون Curex</h3>", unsafe_allow_html=True)
         
         chart_col1, chart_col2 = st.columns(2)
         with chart_col1:
@@ -427,6 +430,6 @@ else:
 st.markdown("""
     <hr style='border-color: rgba(52,211,153,0.2); margin-top: 60px;'>
     <div style='text-align: center; color: #94a3b8; font-size: 14px; padding-bottom: 25px;' class='animated-section'>
-        رعاية ميدكل لنظم الإدارة الطبية &copy; 2026 | جميع الحقوق محفوظة
+        Curex Medical ERP &copy; 2026 | جميع الحقوق محفوظة
     </div>
 """, unsafe_allow_html=True)
