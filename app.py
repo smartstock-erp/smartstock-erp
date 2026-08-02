@@ -5,11 +5,44 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-st.set_page_config(page_title="SmartStock ERP Pro", page_icon="📊", layout="wide")
+# إعدادات الصفحة وتصميم المظهر العام Modern CSS
+st.set_page_config(page_title="SmartStock ERP Pro", page_icon="🛍️", layout="wide")
+
+st.markdown("""
+    <style>
+    .main {
+        background-color: #f8f9fa;
+    }
+    h1, h2, h3 {
+        color: #1e293b;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    div.stForm {
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+    }
+    .stButton>button {
+        background-color: #2563eb;
+        color: white;
+        border-radius: 8px;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border: none;
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        transition: all 0.3s ease;
+    }
+    .stButton>button:hover {
+        background-color: #1d4ed8;
+        box-shadow: 0 4px 8px rgba(37, 99, 235, 0.4);
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 file_path = "SmartStock ERP Pro.xlsx"
 
-# --- دالة إرسال الإيميلات ---
 def send_email_alert(subject, body):
     try:
         sender_email = st.secrets["EMAIL_USER"]
@@ -30,7 +63,6 @@ def send_email_alert(subject, body):
     except Exception as e:
         print(f"فشل إرسال الإيميل: {e}")
 
-# --- تحميل البيانات ---
 def load_data():
     if not os.path.exists(file_path):
         st.error(f"⚠️ ملف الإكسيل غير موجود: {file_path}")
@@ -42,28 +74,38 @@ def load_data():
 
 df_products, df_trans, df_inventory = load_data()
 
-# --- واجهة النظام والصلاحيات ---
 st.sidebar.title("🔐 لوحة التحكم وصلاحيات النظام")
-app_mode = st.sidebar.selectbox("اختر الشاشة", ["🛒 متجر العرض والطلب (للعملاء)", "⚙️ لوحة تحكم المالك (Admin)"])
+app_mode = st.sidebar.selectbox("اختر الشاشة", ["🛒 متجر SmartStock للمنتجات", "⚙️ لوحة تحكم المالك (Admin)"])
 
-if app_mode == "🛒 متجر العرض والطلب (للعملاء)":
-    st.title("🛍️ متجر SmartStock للمنتجات")
+if app_mode == "🛒 متجر SmartStock للمنتجات":
+    st.title("🛍️ متجر SmartStock العصري للمنتجات")
+    st.markdown("أهلاً بك! تصفح منتجاتنا واطلب بكل سهولة ويسر.")
     st.markdown("---")
-    st.subheader("📋 قائمة المنتجات المتاحة للطلب")
     
+    st.subheader("📋 قائمة المنتجات المتاحة للطلب")
     if not df_inventory.empty:
         st.dataframe(df_inventory[["Item Name", "Current Balance"]], use_container_width=True)
     
     st.markdown("---")
-    st.subheader("📝 نموذج طلب شراء جديد")
-    with st.form("customer_order"):
+    st.subheader("📝 نموذج طلب شراء بيانات العميل الكاملة")
+    
+    with st.form("customer_order_full"):
         c_name = st.selectbox("اختر المنتج المطلوب", df_inventory["Item Name"].tolist() if "Item Name" in df_inventory.columns else [])
         c_qty = st.number_input("الكمية المطلوبة", min_value=1, value=1)
-        c_buyer = st.text_input("اسمك الكريم / رقم الهاتـف")
         
-        submit_order = st.form_submit_button("إرسال طلب الشراء")
+        col1, col2 = st.columns(2)
+        with col1:
+            c_buyer = st.text_input("اسمك الكريم")
+            c_phone = st.text_input("رقم الهاتـف / الجوال")
+        with col2:
+            c_email = st.text_input("البريد الإلكتروني")
+            c_payment = st.selectbox("طريقة الدفع", ["الدفع عند الاستلام (Cash)", "تحويل بنكي / إنستاباي", "بطاقة ائتمان"])
+            
+        c_address = st.text_area("عنوان التوصيل بالتفصيل (المدينة، الشارع، رقم العمارة)")
+        
+        submit_order = st.form_submit_button("🚀 تأكيد وإرسال الطلب الآن")
         if submit_order:
-            if c_buyer and c_name:
+            if c_buyer and c_phone and c_address and c_name:
                 try:
                     with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
                         idx = df_inventory[df_inventory["Item Name"] == c_name].index
@@ -76,16 +118,16 @@ if app_mode == "🛒 متجر العرض والطلب (للعملاء)":
 
                         df_inventory.to_excel(writer, sheet_name="Inventory Balance", index=False)
                         
+                        order_notes = f"الاسم: {c_buyer} | الهاتف: {c_phone} | الإيميل: {c_email} | الدفع: {c_payment} | العنوان: {c_address}"
                         new_t = pd.DataFrame([{
-                            "Item Name": c_name, "Transaction Type": "بيع (خصم عبر المتجر)",
-                            "Quantity": c_qty, "Notes": f"عميل: {c_buyer}",
+                            "Item Name": c_name, "Transaction Type": "طلب عميل جديد",
+                            "Quantity": c_qty, "Notes": order_notes,
                             "Date": pd.Timestamp.now().strftime("%Y-%m-%d %H:%M")
                         }])
                         df_trans_updated = pd.concat([df_trans, new_t], ignore_index=True)
                         df_trans_updated.to_excel(writer, sheet_name="Transactions", index=False)
                         df_products.to_excel(writer, sheet_name="Products", index=False)
 
-                    # فحص حد الطلب لإرسال إيميل تنبيه لو المخزون قل
                     reorder_val = df_inventory.loc[idx[0], "Reorder Point"]
                     if new_bal <= int(str(reorder_val).replace("Reorder", "").strip() or 0):
                         send_email_alert(
@@ -93,19 +135,19 @@ if app_mode == "🛒 متجر العرض والطلب (للعملاء)":
                             f"عزيزي المالك،\n\nالمنتج ({c_name}) وصل رصيده الحالي إلى ({new_bal})، وهو أقل من حد الطلب.\nيرجى التوريد فوراً!"
                         )
 
-                    st.success("🎉 تم تسجيل طلبك بنجاح وسيتم التواصل معك!")
+                    st.success("🎉 تم تسجيل طلبك بنجاح، وسيتم التواصل معك لتأكيد الشحن!")
                     st.balloons()
                 except Exception as e:
                     st.error(f"خطأ أثناء تسجيل الطلب: {e}")
             else:
-                st.warning("⚠️ يرجى كتابة اسمك وإدخال البيانات كاملة.")
+                st.warning("⚠️ يرجى ملء البيانات الأساسية (الاسم، الهاتف، العنوان، المنتج).")
 
 else:
-    # شاشة الأدمن السرية
     st.sidebar.markdown("---")
+    # 🔑 كلمة مرور لوحة التحكم الجديدة
     admin_pass = st.sidebar.text_input("كلمة مرور الأدمن", type="password")
     
-    if admin_pass == "1234":  # تقدر تغير الباسورد براحتك هنا
+    if admin_pass == "lklklk900AR4":
         st.title("📊 لوحة تحكم التخطيط والتنبؤ الذكي (Admin Dashboard)")
         st.markdown("---")
 
@@ -113,12 +155,16 @@ else:
         with col1:
             st.metric(label="📦 إجمالي المنتجات", value=len(df_products))
         with col2:
-            st.metric(label="🔄 إجمالي العمليات", value=len(df_trans))
+            st.metric(label="🔄 إجمالي العمليات والطلبات", value=len(df_trans))
         with col3:
             reorder_count = len(df_inventory[df_inventory["Reorder Point"].astype(str).str.contains("Reorder|🚨", na=False)])
             st.metric(label="🚨 منتجات تحتاج للطلب", value=reorder_count)
 
-        st.subheader("📋 تفاصيل المخزون الكاملة")
+        st.subheader("🔔 لوحة متابعة طلبات العملاء والعمليات (Live Orders)")
+        st.dataframe(df_trans, use_container_width=True)
+
+        st.markdown("---")
+        st.subheader("📦 تفاصيل المخزون الحالي")
         st.dataframe(df_inventory, use_container_width=True)
 
         st.markdown("---")
